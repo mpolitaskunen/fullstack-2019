@@ -1,0 +1,49 @@
+The Text below should be copied in https://www.websequencediagrams.com
+or open link:
+https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgTm90ZSBhZGRpdGlvbiBzZXF1ZW5jZSAoU1BBKQoKbm90ZSBsZWZ0IG9mIEJyb3dzZXI6IE9wZW4gdGgANwZzIHBhZ2UKABYHIC0-IFNlcnZlcjogSFRUUCBHRVQgaHR0cHM6Ly9mdWxsc3RhY2stZXhhbXBsZWFwcC5oZXJva3VhcHAuY29tL3NwYQoAOgYgLT4AaApIVE1MIGNvbnRlbnRzACRIbWFpbi5jc3MAXRQAEwkAgQ5KLmoAVRUAEwcKAIMEBW92ZXIAgl4KAIJMCWV4ZWN1dGVzIEphdmFzY3JpcHQgY29kZSwgcHVsbHMgZGF0YSBmcm9tIHMAgncFCmVuZCAAgzcFAIJQSGRhdGEuanNvbgCDChRbeyBBcnJheSBvZgCBBQZpbnNpZGUAgRIFADAFIH1dAIRFBwCBVA0KVGhlAIROCACBWgp0aGUgbmVjZXNzYXJ5IHN0ZXBzIAp0byBkaXNwbGF5AIR0BWNvZGUgaW4gaXRzIHdpbmRvdwCBagkKAFYUIFVzZXIgd3JpdGVzIGEAghUGKFRleHQ6IFRlc3RpKSBpAIVMBmZpZWxkIGFuZCBjbGlja3MgIlN1Ym1pdCIAQRQAgn0jaW5zdGVhZCBvZiBub3JtYWwAhhAGUE9TVCwKaXQgbm93IHB1c2gAgXEHAII3ByAiYXBwbGljYXRpb24vanNvbiIgZm9ybWF0IHRvAIZ1BQpVUkwAg0MjUE9TAIZSLW5ld19ub3RlX3NwYSAAgV4VVGhlAFALYm9keQCHEwVhaW4AgzQGZm9sbG93aW5nOgpDAIcqBi10eXBlOiAAgUIQABYJbGVuZ3RoOiA2NQoKewogICAAh2EIOiAiAIMYBSIsABEFZGF0ZTogIjIwMTktMDUtMDNUMTc6MzQ6MDAuMDAwWiIKfQCDegoAiC4VVFAgMjAxAIZMHmFkZACEewdvdACDCAdvbgCCbQdhAIVfBQCFVQdpdHMgbWVtb3J5CmFuZCByZWRyYXcAhTcGbGlzdACGdwsKCg&s=roundgreen
+
+title Note addition sequence (SPA)
+
+note left of Browser: Open the Notes page
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa
+Server -> Browser: HTML contents
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server -> Browser: main.css
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/spa.js
+Server -> Browser: spa.js
+
+Note over Browser: 
+Browser executes Javascript code, pulls data from server
+end note 
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server -> Browser: [{ Array of data inside data.json }]
+
+note over Browser:
+The Browser executes the necessary steps 
+to display the code in its window
+end note
+
+
+note over Browser: User writes a note (Text: Testi) in the field and clicks "Submit"
+note over Browser: 
+Browser executes Javascript code, instead of normal HTTP POST,
+it now pushes the data in "application/json" format to the 
+URL
+end note 
+Browser -> Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note_spa 
+note over Browser: 
+The HTTP POST body contains the following:
+Content-type: application/json
+Content-length: 65
+
+{
+    content: "Testi",
+    date: "2019-05-03T17:34:00.000Z"
+}
+end note
+Server -> Browser: HTTP 201
+
+Note over Browser: 
+Browser adds the note data onto the array inside its memory
+and redraws the list
+end note 

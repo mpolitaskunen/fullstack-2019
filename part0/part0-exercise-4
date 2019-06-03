@@ -1,0 +1,60 @@
+The Text below should be copied in https://www.websequencediagrams.com
+or open link:
+https://www.websequencediagrams.com/cgi-bin/cdraw?lz=dGl0bGUgTm90ZSBhZGRpdGlvbiBzZXF1ZW5jZQoKbm90ZSBsZWZ0IG9mIEJyb3dzZXI6IE9wZW4gdGgAMQZzIHBhZ2UKABYHIC0-IFNlcnZlcjogSFRUUCBHRVQgaHR0cHM6Ly9mdWxsc3RhY2stZXhhbXBsZWFwcC5oZXJva3VhcHAuY29tL25vdGVzCgA8BiAtPgBqCkhUTUwgY29udGVudHMAJkhtYWluLmNzAFwVABMJACBMagBRGmpzCgoAgwIFb3ZlcgCCYgoAglAJZXhlY3V0ZXMgSmF2YXNjcmlwdCBjb2RlLCBwdWxscyBkYXRhIGZyb20gcwCCewUKZW5kIACDOwUAglRIZGF0YS5qc29uAIMMFFt7IEFycmF5IG9mAIEFBmluc2lkZQCBEgUAMAUgfV0AhEkHAIFUDQpUaGUAhFIIAIFaCnRoZSBuZWNlc3Nhcnkgc3RlcHMgCnRvIGRpc3BsYXkAhHgFY29kZSBpbiBpdHMgd2luZG93AIFqCQoAVhQgVXNlciB3cml0ZXMgYQCCFQYoVGV4dDogVGVzdGkpIGkAhVAGZmllbGQgYW5kIGNsaWNrcyAiU3VibWl0IgCFTBlQT1MAhTguZXdfAIMVBgCBFBMAgg0FAE0KYm9keQCFdAVhaW5zIG9ubACBeAZmb2xsb3dpbmc6IApDAIYRBi1UeXBlOiBhcHBsaWNhdGlvbi94LXd3dy1mb3JtLXVybGVuY29kZWQAJwlMZW5ndGg6IDEwAIdkBj0AggMFAII7CwCGcxVUUCAzMDIgZm91bmQAglMVAIgDCW9wZW4Ag0YGcmVkaXJlY3QgZGVmaW5lZCB3aXRoAEMJAIUhCgCFdwUKAIQrhCIsAIQ7BgCIIQZ3AIlhBmF0AI0PBWVuZACHfW4&s=roundgreen
+
+
+title Note addition sequence
+
+note left of Browser: Open the Notes page
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server -> Browser: HTML contents
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server -> Browser: main.css
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server -> Browser: main.js
+
+Note over Browser: 
+Browser executes Javascript code, pulls data from server
+end note 
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server -> Browser: [{ Array of data inside data.json }]
+
+note over Browser:
+The Browser executes the necessary steps 
+to display the code in its window
+end note
+
+
+note over Browser: User writes a note (Text: Testi) in the field and clicks "Submit"
+Browser -> Server: HTTP POST https://fullstack-exampleapp.herokuapp.com/new_note 
+note over Browser: 
+The HTTP POST body contains only the following: 
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 10
+
+note=Testi
+end note
+
+Server -> Browser: HTTP 302 found
+
+note over Browser: 
+Browser opens the redirect defined with HTTP 302
+end note over 
+
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/notes
+Server -> Browser: HTML contents
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.css
+Server -> Browser: main.css
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/main.js
+Server -> Browser: main.js
+
+Note over Browser: 
+Browser executes Javascript code, pulls data from server
+end note 
+Browser -> Server: HTTP GET https://fullstack-exampleapp.herokuapp.com/data.json
+Server -> Browser: [{ Array of data inside data.json, with the new note at the end }]
+
+note over Browser:
+The Browser executes the necessary steps 
+to display the code in its window
+end note
