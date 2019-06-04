@@ -1,23 +1,29 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 
 import Filter from './Filter'
 import Persons from './Persons'
 import Form from './Form'
+import axios from 'axios'
 
 const App = () => {
-    // Let's create sample data...
-    const [ persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Ada Lovelace', number: '39-44-5323523' },
-        { name: 'Dan Abramov', number: '12-43-234345' },
-        { name: 'Mary Poppendieck', number: '39-23-6423122' }
-    ]) 
+    // Let's define the array...
+    const [ persons, setPersons] = useState([])
     
     // Define some variables..
     const [ newName, setNewName ] = useState('')
     const [ newNumber, setNewNumber ] = useState('')
     const [ newFilter, setNewFilter ] = useState(null)
+
+    useEffect(() => {
+        console.log('effect')
+        axios
+            .get('http://localhost:3001/persons')
+            .then(response => {
+                console.log('promise fulfilled')
+                setPersons(response.data)
+            })
+    })
 
     const addNumber = (event) => {
         // Let's prevent default event functionality...
