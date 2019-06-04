@@ -1,6 +1,7 @@
 import React from 'react'
+import Person from './Person'
 
-const Persons = ({ persons,filter }) => {
+const Persons = ({ persons,filter,removeEntry }) => {
     // Let's make a clone of the array...
     let suodatin = [...persons]
 
@@ -11,12 +12,12 @@ const Persons = ({ persons,filter }) => {
         })
     }
 
-    // Let's display filtered list of persons
-    const rows = suodatin.map((person) => {
-         return (<li key={person.name}>{person.name} {person.number} </li>)
-    })
+    // Let's display filtered list of persons with the Remove-button
+    const rows = suodatin.map(person =>
+        <Person key={person.name} name={person.name} number={person.number} removeEntry={() => removeEntry(person.id)} />
+    )
 
-    // And let's return data to the App itself
+    // And let's return the data
     return (
         <ul>
             {rows}
