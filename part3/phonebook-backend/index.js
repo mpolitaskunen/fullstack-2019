@@ -4,22 +4,18 @@ const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
-
-const cors = require('cors')
-
 const Entry = require('./models/entry')
 
-app.use(cors())
+app.use(bodyParser.json())
+app.use(express.static('build'))
 
+
+// Generate ID function, not needed anymore?
 const generateId = () => {
     const randomId = Math.floor(Math.random() * Math.floor(4294967294))
 
     return randomId
 }
-
-
-app.use(bodyParser.json())
-app.use(express.static('build'))
 
 // Let's define a custom entry for Morgan in the POST method and Tiny-lookalike for the rest
 app.use(morgan(function(tokens,req,res) {
@@ -49,63 +45,52 @@ morgan.token('data', (req) => {
     return `${reqData}`
 })
 
-app.delete('/api/persons/:id', (req, res) => {
-    Entry.findById(req.params.id).then(entry => {
-        res.json(entry.toJSON())
-    })
+// Remove an entry via its id
+app.delete('/api/persons/:id', (req, res, next) => {
+    Entry.findByIdAndRemove(req.params.id)
+        .then(entry => {
+            res.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
-app.get('/info', (req, res) => {
-    const koko = generateId()
-    const date = new Date()
-
-    res.send(`<p>This phonebook has information for ${koko} people</p>${date}`)
-})
-
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</H1>')
-})
-
+// List all the persons...
 app.get('/api/persons', (req, res) => {
     Entry.find({}).then(entries => {
         res.json(entries.map(entry => entry.toJSON()))
     })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-    Entry.findById(req.params.id).then(entry => {
-        res.json(entry.toJSON())
-    })
+app.get('/info', (req, res) => {
+    // Let's count the entries inside the database, then output information, giving a nice timecode too
+    Entry
+        .find({})
+        .then(entries => res.send(`<p>This phonebook has information for ${entries.length} people</p>${new Date()}`))
+        .catch(error => next(error))    
 })
 
-app.post('/api/persons', (req, res) => {
+// Let's give you a nice Hello World if you end up in the root of the backend..
+app.get('/', (req, res) => {
+    res.send('<h1>Hello World!</H1>')
+})
+
+// Let's get a person by the entry id
+app.get('/api/persons/:id', (req, res, next) => {
+    Entry.findById(req.params.id)
+        .then(entry => {
+            if(entry) {
+                res.json(entry.toJSON())
+            } else {
+                res.status(204).end()
+            }
+        })
+        .catch(error => next(error))
+})
+
+// Let's add a new person
+app.post('/api/persons', (req, res, next) => {
     // Let's create a variable from the request...
     const body = req.body
-
-    // Let's check if the name is already in the database (pbName is -1 if it doesn't)
-    // const pbName = phonebook.findIndex((entry) => entry.name === body.name)
-
-    // If there is no name, reply with HTTP 400 end JSON error of name missing
-    // same with number and finally check if pbName is -1 (not found)...
-    //if (!body.name) {
-    //    return res.status(400).json({
-    //        error: 'name missing'
-    //    })
-    //} else if (!body.number) {
-    //    return res.status(400).json({
-    //        error: 'number missing'
-    //    })
-    //} else if (pbName !== -1) {
-    //    return res.status(400).json({
-    //        error: 'The name already exists'
-    //    })
-    //}
-
-    // Let's make a completely new IF conditional for the mongoose...
-    if (body.content === undefined) {
-        return res.status(400).json({ error: 'content missing'})
-    }
-
 
     // Define the phonebook entry format, generate it from the request body, add and generate id
     const entry = new Entry({
@@ -114,10 +99,54 @@ app.post('/api/persons', (req, res) => {
         id: generateId(),
     })
 
-    entry.save().then(savedEntry => {
-        res.json(savedEntry.toJSON())
-    })
+    // Let's save this...
+    entry
+        .save()
+        .then(saved => saved.toJSON())
+        .then(savedAndFormatted => {
+            res.json(savedAndFormatted)
+        })
+        .catch(error => next(error))
 })
+
+// The entry update method
+app.put('/api/persons/:id', (req,res,next) => {
+    const body = req.body
+
+    const entry = {
+        name: body.name,
+        number: body.number,
+    }
+
+    Entry
+        .findByIdAndUpdate(req.params.id, entry, { new: true })
+        .then(updatedEntry => updatedEntry.toJSON())
+        .then(updatedAndFormatted => {
+            res.json(updatedAndFormatted)
+        })
+        .catch(error => next(error))
+})
+
+// The error handler
+const errorHandler = (error, req, res, next) => {
+    console.error(error.message)
+
+    if(error.name === 'CastError' && error.kind == 'ObjectId') {
+        return res.status(400).send({ error: 'malformatted id' })
+    } else if (error.name === 'ValidationError') {
+        return res.status(400).send({ error: error.message})
+    }
+
+    next(error)
+}
+
+// The Unknown Endpoint handler
+const unknownEndpoint = (req, res) => {
+    res.status(404).send({ error: 'unknown endpoint' })
+}
+
+app.use(errorHandler)
+app.use(unknownEndpoint)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
