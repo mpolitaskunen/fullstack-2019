@@ -1,9 +1,13 @@
+require('dotenv').config()
+
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 
 const cors = require('cors')
+
+const Entry = require('./models/entry')
 
 app.use(cors())
 
@@ -44,34 +48,10 @@ morgan.token('data', (req) => {
     return `${reqData}`
 })
 
-let phonebook = [
-    {
-        "name": "Arto Hellas",
-        "number": "040-123456",
-        "id": 1
-    },
-    {
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523",
-        "id": 2
-    },
-    {
-        "name": "Dan Abramov",
-        "number": "12-43-234345",
-        "id": 3
-    },
-    {
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122",
-        "id": 4
-    }
-]
-
 app.delete('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    phonebook = phonebook.filter(entry => entry.id !== id)
-
-    res.status(204).end()
+    Entry.findById(req.params.id).then(entry => {
+        res.json(entry.toJSON())
+    })
 })
 
 app.get('/info', (req, res) => {
@@ -86,22 +66,15 @@ app.get('/', (req, res) => {
 })
 
 app.get('/api/persons', (req, res) => {
-    res.json(phonebook)
+    Entry.find({}).then(entries => {
+        res.json(entries.map(entry => entry.toJSON()))
+    })
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    // Let's define ID, and that it's a number
-    const id = Number(req.params.id)
-
-    // Find the ID from the notes...
-    const entry = phonebook.find(entry => entry.id === id)
-
-    // Reply the json of the note with the proper ID
-    if (entry) {
-        res.json(entry)
-    } else {
-        res.status(404).end()
-    }
+    Entry.findById(req.params.id).then(entry => {
+        res.json(entry.toJSON())
+    })
 })
 
 app.post('/api/persons', (req, res) => {
@@ -129,19 +102,18 @@ app.post('/api/persons', (req, res) => {
 
 
     // Define the phonebook entry format, generate it from the request body, add and generate id
-    const entry = {
+    const entry = new Entry({
         name: body.name,
         number: body.number,
         id: generateId(),
-    }
+    })
 
-    // Add the new note to the JSON array
-    phonebook = phonebook.concat(entry)
-
-    res.json(entry)
+    NodeIterator.save().then(savedEntry => {
+        res.json(savedEntry.toJSON())
+    })
 })
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
