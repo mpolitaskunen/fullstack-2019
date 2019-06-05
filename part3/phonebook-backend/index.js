@@ -41,16 +41,15 @@ app.use(morgan(function(tokens,req,res) {
 
 // And let's define the 'data' tokentype for Morgan's use
 morgan.token('data', (req) => {
-    reqData = JSON.stringify(req.body)
+    const reqData = JSON.stringify(req.body)
     return `${reqData}`
 })
 
 // Remove an entry via its id
 app.delete('/api/persons/:id', (req, res, next) => {
-    Entry.findByIdAndRemove(req.params.id)
-        .then(entry => {
-            res.status(204).end()
-        })
+    Entry
+        .findByIdAndRemove(req.params.id)
+        .then(entry => res.status(204).end())
         .catch(error => next(error))
 })
 
@@ -61,12 +60,12 @@ app.get('/api/persons', (req, res) => {
     })
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', (req, res, next) => {
     // Let's count the entries inside the database, then output information, giving a nice timecode too
     Entry
         .find({})
         .then(entries => res.send(`<p>This phonebook has information for ${entries.length} people</p>${new Date()}`))
-        .catch(error => next(error))    
+        .catch(error => next(error))
 })
 
 // Let's give you a nice Hello World if you end up in the root of the backend..
@@ -131,10 +130,10 @@ app.put('/api/persons/:id', (req,res,next) => {
 const errorHandler = (error, req, res, next) => {
     console.error(error.message)
 
-    if(error.name === 'CastError' && error.kind == 'ObjectId') {
+    if(error.name === 'CastError' && error.kind === 'ObjectId') {
         return res.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        return res.status(400).send({ error: error.message})
+        return res.status(400).send({ error: error.message })
     }
 
     next(error)

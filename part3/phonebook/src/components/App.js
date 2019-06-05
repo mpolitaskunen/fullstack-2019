@@ -9,7 +9,7 @@ import Notification from './Notification'
 const App = () => {
     // Let's define the array...
     const [ persons, setPersons] = useState([])
-    
+
     // Define some state variables..
     const [ newName, setNewName ] = useState('')
     const [ newNumber, setNewNumber ] = useState('')
@@ -50,29 +50,29 @@ const App = () => {
                     .update(id,numberObject)
                     .then(newEntry => {
                         const newState = {
-                            message: `The entry for ${numberObject.name} has been updated`, 
+                            message: `The entry for ${numberObject.name} has been updated`,
                             type: 'note'
                         }
                         setNotificationState(newState)
-                        setTimeout(() => { setNotificationState({...notificationState, message: null})
-                    }, 5000)
+                        setTimeout(() => { setNotificationState({ ...notificationState, message: null })
+                        }, 5000)
 
-                    // And let's update the view
-                    const newPersons = persons.map(person => person.id !== id ? person : newEntry)
-                    setPersons(newPersons)
-                })
-                // Let's catch errors!
-                .catch(error => {
-                    const newState = {
-                        message: `The entry of ${numberObject.name} has already been removed from the server`,
-                        type: 'error'
-                    }
-                    setNotificationState(newState)
-                    setTimeout(() => { setNotificationState({...notificationState, message: null })
-                    }, 5000)
+                        // And let's update the view
+                        const newPersons = persons.map(person => person.id !== id ? person : newEntry)
+                        setPersons(newPersons)
+                    })
+                    // Let's catch errors!
+                    .catch(error => {
+                        const newState = {
+                            message: `The entry of ${numberObject.name} has already been removed from the server`,
+                            type: 'error'
+                        }
+                        setNotificationState(newState)
+                        setTimeout(() => { setNotificationState({ ...notificationState, message: null })
+                        }, 5000)
 
-                    setPersons(persons.filter(person => person.id !== id))
-                })
+                        setPersons(persons.filter(person => person.id !== id))
+                    })
             }
 
         } else {
@@ -84,7 +84,7 @@ const App = () => {
                         type: 'note'
                     }
                     setNotificationState(newState)
-                    setTimeout(() => { setNotificationState({...notificationState, message: null })
+                    setTimeout(() => { setNotificationState({ ...notificationState, message: null })
                     }, 5000)
 
                     setPersons(persons.concat(numberObject))
@@ -93,12 +93,12 @@ const App = () => {
                 })
                 .catch(error => {
                     const newState = {
-                        message: `Validation error: Either name was shorter than 3 characters or number was shorter than 8 characters`,
+                        message: 'Validation error: Either name was shorter than 3 characters or number was shorter than 8 characters',
                         type: 'error'
                     }
                     setNotificationState(newState)
-                    setTimeout(() => { setNotificationState({...notificationState, message: null})
-                }, 5000)
+                    setTimeout(() => { setNotificationState({ ...notificationState, message: null })
+                    }, 5000)
                 })
         }
     }
@@ -115,7 +115,7 @@ const App = () => {
 
     const handleFilterChange = (event) => {
         // Let's update the newFilter variable with lowercase data
-        setNewFilter(event.target.value.toLowerCase());
+        setNewFilter(event.target.value.toLowerCase())
     }
 
     const removeEntryHandler = (id) => {
@@ -135,7 +135,7 @@ const App = () => {
                     }
                     setNotificationState(newState)
                     setTimeout(() => {
-                        setNotificationState({...notificationState, message:null})
+                        setNotificationState({ ...notificationState, message:null })
                     }, 5000)
 
                     // Let's remove the entry form view too..
@@ -148,11 +148,11 @@ const App = () => {
                         type: 'error'
                     }
                     setNotificationState(newState)
-                    setTimeout(() => { setNotificationState({...notificationState, message:null})
-                }, 5000)
-                
-                // Let's clean up the view, since the entry doesn't exist anyways...
-                setPersons(persons.filter(person => person.id !== id))
+                    setTimeout(() => { setNotificationState({ ...notificationState, message:null })
+                    }, 5000)
+
+                    // Let's clean up the view, since the entry doesn't exist anyways...
+                    setPersons(persons.filter(person => person.id !== id))
                 })
         }
     }
