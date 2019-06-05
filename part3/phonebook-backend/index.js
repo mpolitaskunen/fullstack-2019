@@ -19,6 +19,7 @@ const generateId = () => {
 
 
 app.use(bodyParser.json())
+app.use(express.static('build'))
 
 // Let's define a custom entry for Morgan in the POST method and Tiny-lookalike for the rest
 app.use(morgan(function(tokens,req,res) {
