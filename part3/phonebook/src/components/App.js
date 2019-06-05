@@ -91,6 +91,15 @@ const App = () => {
                     setNewName('')
                     setNewNumber('')
                 })
+                .catch(error => {
+                    const newState = {
+                        message: `virhe`,
+                        type: 'error'
+                    }
+                    setNotificationState(newState)
+                    setTimeout(() => { setNotificationState({...notificationState, message: null})
+                }, 5000)
+                })
         }
     }
 

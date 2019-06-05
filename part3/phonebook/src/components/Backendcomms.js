@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const address = 'http://localhost:3001/api/persons'
+// const address = 'http://localhost:3001/api/persons'
+const address = 'https://lit-sierra-41724.herokuapp.com/api/persons'
 
 // Define the get everything function...
 const getAll = () => {
