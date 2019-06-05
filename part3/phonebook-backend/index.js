@@ -83,22 +83,27 @@ app.post('/api/persons', (req, res) => {
     const body = req.body
 
     // Let's check if the name is already in the database (pbName is -1 if it doesn't)
-    const pbName = phonebook.findIndex((entry) => entry.name === body.name)
+    // const pbName = phonebook.findIndex((entry) => entry.name === body.name)
 
     // If there is no name, reply with HTTP 400 end JSON error of name missing
     // same with number and finally check if pbName is -1 (not found)...
-    if (!body.name) {
-        return res.status(400).json({
-            error: 'name missing'
-        })
-    } else if (!body.number) {
-        return res.status(400).json({
-            error: 'number missing'
-        })
-    } else if (pbName !== -1) {
-        return res.status(400).json({
-            error: 'The name already exists'
-        })
+    //if (!body.name) {
+    //    return res.status(400).json({
+    //        error: 'name missing'
+    //    })
+    //} else if (!body.number) {
+    //    return res.status(400).json({
+    //        error: 'number missing'
+    //    })
+    //} else if (pbName !== -1) {
+    //    return res.status(400).json({
+    //        error: 'The name already exists'
+    //    })
+    //}
+
+    // Let's make a completely new IF conditional for the mongoose...
+    if (body.content === undefined) {
+        return Response.status(400).json({ error: 'content missing'})
     }
 
 
@@ -109,7 +114,7 @@ app.post('/api/persons', (req, res) => {
         id: generateId(),
     })
 
-    NodeIterator.save().then(savedEntry => {
+    entry.save().then(savedEntry => {
         res.json(savedEntry.toJSON())
     })
 })
