@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const address = 'http://localhost:3001/persons'
+const address = 'http://localhost:3001/api/persons'
 
 // Define the get everything function...
 const getAll = () => {

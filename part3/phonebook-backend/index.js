@@ -1,8 +1,11 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
-const PORT = 3001
+const cors = require('cors')
+
+app.use(cors())
 
 const generateId = () => {
     const randomId = Math.floor(Math.random() * Math.floor(4294967294))
@@ -10,7 +13,36 @@ const generateId = () => {
     return randomId
 }
 
+
 app.use(bodyParser.json())
+
+// Let's define a custom entry for Morgan in the POST method and Tiny-lookalike for the rest
+app.use(morgan(function(tokens,req,res) {
+    if (tokens.method(req,res) === 'POST') {
+        return [
+            tokens.method(req,res),
+            tokens.url(req,res),
+            tokens.status(req,res),
+            tokens.res(req,res, 'content-length'), '-',
+            tokens['response-time'](req,res), 'ms',
+            tokens['data'](req,res)
+        ].join(' ')
+    } else {
+        return [
+            tokens.method(req,res),
+            tokens.url(req,res),
+            tokens.status(req,res),
+            tokens.res(req,res, 'content-length'), '-',
+            tokens['response-time'](req,res),'ms'
+        ].join(' ')
+    }
+}))
+
+// And let's define the 'data' tokentype for Morgan's use
+morgan.token('data', (req) => {
+    reqData = JSON.stringify(req.body)
+    return `${reqData}`
+})
 
 let phonebook = [
     {
@@ -109,6 +141,7 @@ app.post('/api/persons', (req, res) => {
     res.json(entry)
 })
 
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`)
 })
