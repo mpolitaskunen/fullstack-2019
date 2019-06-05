@@ -103,7 +103,7 @@ app.post('/api/persons', (req, res) => {
 
     // Let's make a completely new IF conditional for the mongoose...
     if (body.content === undefined) {
-        return Response.status(400).json({ error: 'content missing'})
+        return res.status(400).json({ error: 'content missing'})
     }
 
 
