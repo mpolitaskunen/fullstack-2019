@@ -93,7 +93,7 @@ const App = () => {
                 })
                 .catch(error => {
                     const newState = {
-                        message: `virhe`,
+                        message: `Validation error: Either name was shorter than 3 characters or number was shorter than 8 characters`,
                         type: 'error'
                     }
                     setNotificationState(newState)
