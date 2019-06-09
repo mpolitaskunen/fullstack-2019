@@ -47,7 +47,7 @@ const initialEntries = [
 beforeAll(async () => {
     await Entry.deleteMany({})
 
-    await initialEntries.forEach(function(entries) {
+    await initialEntries.forEach(function (entries) {
         const object = new Entry(entries)
         object.save()
     })
@@ -89,7 +89,7 @@ describe('Field formatting tests..', () => {
     })
 })
 
-describe('Test for HTTP POST', () => {
+describe('HTTP POST tests..', () => {
     test('Check if you can add a new entry', async () => {
         const newEntry = {
             title: 'This is a new Entry',
@@ -112,6 +112,27 @@ describe('Test for HTTP POST', () => {
         expect(contents).toContain(
             'This is a new Entry'
         )
+    })
+
+    test('Check that likes gets 0 if it\'s not supplied', async () => {
+        const newEntry = {
+            title: 'This an entry for the Likes = 0 test',
+            author: 'Seppo Taskunen',
+            url: 'https://high.fi'
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newEntry)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const response = await api.get('/api/blogs')
+
+        const contents = response.body.map(function (r) {
+            return { title: r.title, likes: r.likes }
+        })
+        expect(contents[contents.length - 1].likes).toBeDefined()
     })
 })
 
