@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "The first blog post",
+    "title": "The third blog post",
     "author": "The creator of this webapp",
-    "url": "http://localhost:3003",
-    "likes": "1"
+    "url": "http://localhost:3003/api/blogs",
+    "likes": "155555"
 }
