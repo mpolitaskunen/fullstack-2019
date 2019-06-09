@@ -1,55 +1,17 @@
 const mongoose = require('mongoose')
 const supertest = require('supertest')
+const helper = require('./test_helper')
 const app = require('../app')
 const Entry = require('../models/entry')
 
 const api = supertest(app)
 
-// Let's create initial entries for the test database...
-const initialEntries = [
-    {
-        title: 'React patterns',
-        author: 'Michael Chan',
-        url: 'https://reactpatterns.com/',
-        likes: 7,
-    },
-    {
-        title: 'Go To Statement Considered Harmful',
-        author: 'Edsger W. Dijkstra',
-        url: 'http://www.u.arizona.edu/~rubinson/copyright_violations/Go_To_Considered_Harmful.html',
-        likes: 5,
-    },
-    {
-        title: 'Canonical string reduction',
-        author: 'Edsger W. Dijkstra',
-        url: 'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
-        likes: 12,
-    },
-    {
-        title: 'First class tests',
-        author: 'Robert C. Martin',
-        url: 'http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll',
-        likes: 10,
-    },
-    {
-        title: 'TDD harms architecture',
-        author: 'Robert C. Martin',
-        url: 'http://blog.cleancoder.com/uncle-bob/2017/03/03/TDD-Harms-Architecture.html',
-        likes: 0,
-    },
-    {
-        title: 'Type wars',
-        author: 'Robert C. Martin',
-        url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
-        likes: 2,
-    }
-]
 
 // Before any tests begin, let's clear the database, then recreate it with out entries...
 beforeAll(async () => {
     await Entry.deleteMany({})
 
-    await initialEntries.forEach(function (entries) {
+    await helper.initialEntries.forEach(function (entries) {
         const object = new Entry(entries)
         object.save()
     })
@@ -67,7 +29,7 @@ describe('The basic entry tests..', () => {
     test('There are six(6) entries in the database..', async () => {
         const response = await api.get('/api/blogs')
 
-        expect(response.body.length).toBe(initialEntries.length)
+        expect(response.body.length).toBe(helper.initialEntries.length)
     })
 
     test('The entry titles contain Type wars', async () => {
@@ -111,7 +73,7 @@ describe('HTTP POST tests..', () => {
 
         const contents = response.body.map(r => r.title)
 
-        expect(response.body.length).toBe(initialEntries.length + 1)
+        expect(response.body.length).toBe(helper.initialEntries.length + 1)
         expect(contents).toContain(
             'This is a new Entry'
         )
@@ -147,6 +109,52 @@ describe('HTTP POST tests..', () => {
             .post('/api/blogs')
             .send(newEntry)
             .expect(400)
+    })
+})
+
+describe('Deletion tests..', () => {
+    test('Deletion succeeds if ID is valid', async () => {
+        const entriesAtStart = await helper.entriesInDb()
+        const entryToDelete = entriesAtStart[0]
+
+        await api
+            .delete(`/api/blogs/${entryToDelete.id}`)
+            .expect(204)
+
+        const entriesAtEnd = await helper.entriesInDb()
+
+        expect(entriesAtEnd.length).toBe(
+            entriesAtStart.length - 1
+        )
+
+        const contents = entriesAtEnd.map(r => r.title)
+
+        expect(contents).not.toContain(entryToDelete.title)
+    })
+})
+
+describe('Update tests..', () => {
+    test('Test updating the like field', async () => {
+        const entriesAtStart = await helper.entriesInDb()
+        const updatedEntry = {
+            title: 'Type wars',
+            author: 'Robert C. Martin',
+            url: 'http://blog.cleancoder.com/uncle-bob/2016/05/01/TypeWars.html',
+            likes: 57000,
+        }
+
+        const entryToBeUpdated = entriesAtStart[4]
+
+        await api
+            .put(`/api/blogs/${entryToBeUpdated.id}`)
+            .send(updatedEntry)
+            .expect(200)
+
+        const theUpdate = await api
+            .get(`/api/blogs/${entryToBeUpdated.id}`)
+            .expect(200)
+
+        expect(theUpdate.body.likes).toBe(57000)
     })
 })
 
