@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 // Dummy function that always returns 1
 const dummy = (blogs) => {
     return 1
@@ -16,10 +18,15 @@ const favoriteBlog = function (blogs) {
 }
 
 const mostBlogs = function (blogs) {
-    return {
-        author: 'Robert C. Martin',
-        blogs: 3
-    }
+    var result = _(blogs)
+        .countBy('author')
+        .map((blogs, author) => ({ author, blogs }))
+
+    return result.reduce(function (prev,current) {
+        return (prev.blogs > current.blogs)
+            ? prev
+            : current
+    })
 }
 
 const mostLikes = function (blogs) {
