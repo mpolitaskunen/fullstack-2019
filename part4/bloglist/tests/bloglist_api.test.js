@@ -80,6 +80,41 @@ describe('The basic entry tests..', () => {
     })
 })
 
+describe('Field formatting tests..', () => {
+    test('Check if ID field is correct..', async () => {
+        const response = await api.get('/api/blogs')
+        const contents = response.body
+
+        expect(contents[0].id).toBeDefined()
+    })
+})
+
+describe('Test for HTTP POST', () => {
+    test('Check if you can add a new entry', async () => {
+        const newEntry = {
+            title: 'This is a new Entry',
+            author: 'Seppo Taskunen',
+            url: 'https://google.fi',
+            likes: 9999999
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newEntry)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+
+        const response = await api.get('/api/blogs')
+
+        const contents = response.body.map(r => r.title)
+
+        expect(response.body.length).toBe(initialEntries.length + 1)
+        expect(contents).toContain(
+            'This is a new Entry'
+        )
+    })
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
