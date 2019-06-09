@@ -5,5 +5,6 @@ Content-Type: application/json
     "title": "The third blog post",
     "author": "The creator of this webapp",
     "url": "http://localhost:3003/api/blogs",
-    "likes": "155555"
+    "likes": "155555",
+    "userId": "5cfd61838884dc8d8cb13e1c"
 }

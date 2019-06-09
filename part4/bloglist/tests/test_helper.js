@@ -1,4 +1,5 @@
 const Entry = require('../models/entry')
+const User = require('../models/user')
 
 // Let's create initial entries for the test database...
 const initialEntries = [
@@ -59,8 +60,14 @@ const entriesInDb = async () => {
     return entries.map(entry => entry.toJSON())
 }
 
+const usersInDb = async () => {
+    const users = await User.find({})
+    return users.map(u => u.toJSON())
+}
+
 module.exports = {
     entriesInDb,
     nonExistingId,
-    initialEntries
+    initialEntries,
+    usersInDb
 }
