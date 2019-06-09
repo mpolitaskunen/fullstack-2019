@@ -5,6 +5,7 @@ const Entry = require('../models/entry')
 
 const api = supertest(app)
 
+// Let's create initial entries for the test database...
 const initialEntries = [
     {
         title: 'React patterns',
@@ -44,6 +45,7 @@ const initialEntries = [
     }
 ]
 
+// Before any tests begin, let's clear the database, then recreate it with out entries...
 beforeAll(async () => {
     await Entry.deleteMany({})
 
@@ -53,23 +55,22 @@ beforeAll(async () => {
     })
 })
 
-
-test('The Bloglist is returned as JSON', async () => {
-    await api
-        .get('/api/blogs')
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-})
-
-
+// First basic tests..
 describe('The basic entry tests..', () => {
-    test('There are two entries in the database..', async () => {
+    test('The Bloglist is returned as JSON', async () => {
+        await api
+            .get('/api/blogs')
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
+    })
+
+    test('There are six(6) entries in the database..', async () => {
         const response = await api.get('/api/blogs')
 
         expect(response.body.length).toBe(initialEntries.length)
     })
 
-    test('the first note is about HTTP methods', async () => {
+    test('The entry titles contain Type wars', async () => {
         const response = await api.get('/api/blogs')
 
         const contents = response.body.map(r => r.title)
@@ -80,6 +81,7 @@ describe('The basic entry tests..', () => {
     })
 })
 
+// Formatting tests
 describe('Field formatting tests..', () => {
     test('Check if ID field is correct..', async () => {
         const response = await api.get('/api/blogs')
@@ -89,6 +91,7 @@ describe('Field formatting tests..', () => {
     })
 })
 
+// HTTP POST tests
 describe('HTTP POST tests..', () => {
     test('Check if you can add a new entry', async () => {
         const newEntry = {
@@ -134,9 +137,20 @@ describe('HTTP POST tests..', () => {
         })
         expect(contents[contents.length - 1].likes).toBeDefined()
     })
+
+    test('Check that HTTP POST without title or URL fields fails...', async () => {
+        const newEntry = {
+            author: 'Seppo Taskunen'
+        }
+
+        await api
+            .post('/api/blogs')
+            .send(newEntry)
+            .expect(400)
+    })
 })
 
-
+// Close connections after the tests have ended
 afterAll(() => {
     mongoose.connection.close()
 })
