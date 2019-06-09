@@ -30,10 +30,19 @@ const mostBlogs = function (blogs) {
 }
 
 const mostLikes = function (blogs) {
-    return {
-        author: 'Edsger W. Dijkstra',
-        likes: 17
-    }
+    var result = _(blogs)
+        .groupBy('author')
+        .map((likes, author) => ({
+            author: author,
+            likes: _.sumBy(likes, 'likes')
+        }))
+        .value()
+
+    return result.reduce(function (prev,current) {
+        return (prev.likes > current.likes)
+            ? prev
+            : current
+    })
 }
 
 module.exports = {
