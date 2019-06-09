@@ -37,7 +37,7 @@ const mostLikes = function (blogs) {
         .map((likes, author) => ({ // Map the fields we want into new fields in the variable/collection
             author: author,
             likes: _.sumBy(likes, 'likes') // And sum by the amount of likes
-        })) 
+        }))
         .value()
 
     return result.reduce(function (prev,current) { // And return the object with the maximum value in 'likes'

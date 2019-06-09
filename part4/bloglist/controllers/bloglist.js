@@ -1,13 +1,13 @@
 const bloglistRouter = require('express').Router()
 const Entry = require('../models/entry')
 
-bloglistRouter.get('/', (req, res) => {
+bloglistRouter.get('/', async (req, res) => {
     Entry.find({}).then(entries => {
         res.json(entries.map(entry => entry.toJSON()))
     })
 })
 
-bloglistRouter.get('/:id', (req,res,next) => {
+bloglistRouter.get('/:id', async (req,res,next) => {
     Entry.findById(req.params.id)
         .then(entry => {
             if (entry) {
@@ -19,7 +19,7 @@ bloglistRouter.get('/:id', (req,res,next) => {
         .catch(error => next(error))
 })
 
-bloglistRouter.post('/', (req, res,next) => {
+bloglistRouter.post('/', async (req, res,next) => {
     const body = req.body
 
     const entry = new Entry({
@@ -37,7 +37,7 @@ bloglistRouter.post('/', (req, res,next) => {
         .catch(error => next(error))
 })
 
-bloglistRouter.delete('/:id', (req,res,next) => {
+bloglistRouter.delete('/:id', async (req,res,next) => {
     Entry.findByIdAndRemove(req.params.id)
         .then(() => {
             res.status(204).end()
@@ -45,7 +45,7 @@ bloglistRouter.delete('/:id', (req,res,next) => {
         .catch(error => next(error))
 })
 
-bloglistRouter.put('/:id', (req,res,next) => {
+bloglistRouter.put('/:id', async (req,res,next) => {
     const body = req.body
 
     const entry = {
