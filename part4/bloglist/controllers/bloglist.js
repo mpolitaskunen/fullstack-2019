@@ -2,7 +2,6 @@ const bloglistRouter = require('express').Router()
 const Entry = require('../models/entry')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
-const middleware = require('../utils/middleware')
 
 bloglistRouter.get('/', async (req, res) => {
     const entries = await Entry
@@ -24,14 +23,14 @@ bloglistRouter.get('/:id', async (req,res,next) => {
         .catch(error => next(error))
 })
 
-bloglistRouter.post('/', async (req, res,next) => {
+bloglistRouter.post('/', async (req,res,next) => {
     const body = req.body
 
     try {
         const decodedToken = jwt.verify(req.token, process.env.SECRET)
 
         if(!req.token ||!decodedToken.id) {
-            return res.status(401).json({ error: 'token missing or invalid' })
+            return res.status(401).json({ error: 'The authorization token is missing' })
         }
 
         const user = await User.findById(decodedToken.id)
@@ -48,19 +47,20 @@ bloglistRouter.post('/', async (req, res,next) => {
         user.entries = user.entries.concat(savedEntry._id)
         await user.save()
         res.json(savedEntry.toJSON())
-    } catch(exception) {
-        next(exception)
+    } catch(error) {
+        next(error)
     }
 })
 
 bloglistRouter.delete('/:id', async (req,res,next) => {
+    const body = req.body
+    console.log(body)
+
     try{
         const decodedToken = jwt.verify(req.token, process.env.SECRET)
-        console.log('The token is...', req.token)
-        console.log('The Decoded token is...', decodedToken)
 
         if(!req.token || !decodedToken.id) {
-            return res.status(401).json({ error: 'Token missing' })
+            return res.status(401).json({ error: 'The authorization token is missing' })
         }
 
         const user = await User.findById(decodedToken.id)
@@ -70,16 +70,12 @@ bloglistRouter.delete('/:id', async (req,res,next) => {
             return res.status(400).json({ error: 'Invalid entry ID' })
         }
 
-        try{
-            if (entry.user.toString() === user.id) {
-                Entry.findByIdAndDelete(req.params.id)
-                res.status(204).end()
-            }
-        } catch (exception) {
-            next(exception)
+        if (entry.user.toString() === user.id) {
+            Entry.findByIdAndDelete(req.params.id)
+            res.status(204).end()
         }
-    } catch(exception) {
-        next(exception)
+    } catch(error) {
+        next(error)
     }
 })
 
