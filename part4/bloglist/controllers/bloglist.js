@@ -3,9 +3,11 @@ const Entry = require('../models/entry')
 const User = require('../models/user')
 
 bloglistRouter.get('/', async (req, res) => {
-    Entry.find({}).then(entries => {
-        res.json(entries.map(entry => entry.toJSON()))
-    })
+    const entries = await Entry
+        .find({})
+        .populate('user', { username: 1, name: 1 })
+
+    res.json(entries.map(entry => entry.toJSON()))
 })
 
 bloglistRouter.get('/:id', async (req,res,next) => {
@@ -23,14 +25,14 @@ bloglistRouter.get('/:id', async (req,res,next) => {
 bloglistRouter.post('/', async (req, res,next) => {
     const body = req.body
 
-    const user = await User.findById(body.userId)
+    const user = await User.findById(body.user)
 
     const entry = new Entry({
         title: body.title,
         author: body.author,
         url: body.url,
         likes: body.likes,
-        userId: user._id
+        user: user._id
     })
 
     try {
