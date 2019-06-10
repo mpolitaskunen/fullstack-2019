@@ -11,13 +11,25 @@ const App = () => {
     const [newBlogUrl, setNewBlogUrl] = useState('')
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
-    const [errorMessage, setErrorMessage] = useState(null)
     const [user, setUser] = useState(null)
+    const [notificationState, setNotificationState] = useState({
+        message: null,
+        type: null
+    })
 
     useEffect(() => {
         blogService.getAll().then(blogs =>
             setBlogs( blogs )
         )
+    }, [])
+
+    useEffect(() => {
+        const loggedUserJSON = window.localStorage.getItem('loggedBloglistappUser')
+        if (loggedUserJSON) {
+            const user = JSON.parse(loggedUserJSON)
+            setUser(user)
+            blogService.setToken(user.token)
+        }
     }, [])
 
     const Footer = () => {
@@ -42,14 +54,56 @@ const App = () => {
                 username, password,
             })
 
+            window.localStorage.setItem(
+                'loggedBloglistappUser', JSON.stringify(user)
+            )
+
+            blogService.setToken(user.token)
+
             setUser(user)
             setUsername('')
             setPassword('')
-        } catch (exception) {
-            setErrorMessage('Username or password not valid')
+            const newState = {
+                message: 'Login succeeded',
+                type: 'Event'
+            }
+            setNotificationState(newState)
             setTimeout(() => {
-                setErrorMessage(null)
+                setNotificationState({ ...notificationState, message: null })
             }, 5000)
+        } catch (exception) {
+            const newState = {
+                message: 'The username or password is not valid',
+                type: 'error'
+            }
+            setNotificationState(newState)
+            setTimeout(() => {
+                setNotificationState({ ...notificationState, message: null })
+            }, 5000)
+        }
+    }
+
+    const logout = async (event) => {
+        try {
+            window.localStorage.clear()
+            window.location.href = '/'
+            const newState = {
+                message: 'Logout succeeded. Have a nice day :)',
+                type: 'Event'
+            }
+            setNotificationState(newState)
+            setTimeout(() => {
+                setNotificationState({ ...notificationState, message: null })
+            }, 5000)
+        } catch(exception) {
+            const newState = {
+                message: 'Logout failed',
+                type: 'error'
+            }
+            setNotificationState(newState)
+            setTimeout(() => {
+                setNotificationState({ ...notificationState, message: null })
+            },5000)
         }
     }
 
@@ -73,22 +127,44 @@ const App = () => {
         setNewBlogUrl(event.target.value)
     }
 
-    const addBlog = (event) => {
+    const addBlog = async (event) => {
         event.preventDefault()
-        const blogObject = {
-            title: newBlogTitle,
-            author: newBlogAuthor,
-            url: newBlogUrl
-        }
+        try {
+            const blogObject = {
+                title: newBlogTitle,
+                author: newBlogAuthor,
+                url: newBlogUrl
+            }
 
-        blogService
-            .create(blogObject)
-            .then(returnedBlog => {
-                setBlogs(blogs.concat(returnedBlog))
-                setNewBlogAuthor('')
-                setNewBlogTitle('')
-                setNewBlogUrl('')
-            })
+            const newState = {
+                message: `Added a new entry: ${newBlogTitle} by ${newBlogAuthor}`,
+                type: 'Event'
+            }
+
+            blogService
+                .create(blogObject)
+                .then(returnedBlog => {
+                    setBlogs(blogs.concat(returnedBlog))
+                    setNewBlogAuthor('')
+                    setNewBlogTitle('')
+                    setNewBlogUrl('')
+                })
+
+            setNotificationState(newState)
+            setTimeout(() => {
+                setNotificationState({ ...notificationState, message: null })
+            }, 5000)
+
+        } catch(exception) {
+            const newState = {
+                message: 'Adding a new entry failed',
+                type: 'error'
+            }
+            setNotificationState(newState)
+            setTimeout(() => {
+                setNotificationState({ ...notificationState, message: null })
+            }, 5000)
+        }
     }
 
     const loginForm = () => {
@@ -123,13 +199,27 @@ const App = () => {
         )
     }
 
+    const logoutForm = () => {
+        return(
+            <div>
+                <form onSubmit={logout}>
+                    <button type="submit">Logout</button>
+                </form>
+            </div>
+        )
+    }
+
     return (
         <div>
-            <Notification message={errorMessage} />
+            <Notification state={notificationState} />
             <h2>Bloglist</h2>
             {user === null
                 ? loginForm()
                 : <div><p>{user.name} logged in</p> {blogForm()}</div>
+            }
+            {user !== null
+                ? logoutForm()
+                : <div></div>
             }
             {blogs.map(blog =>
                 <Blog key={blog.id} blog={blog} />

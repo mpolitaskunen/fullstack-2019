@@ -18,7 +18,7 @@ const Notification = ( {state} ) => {
         marginBottom: '50px'
     }
 
-    let notificationStyle = null;
+    let notificationStyle = null
 
     if (type === 'error') {
         // And let's add color (red) for the error messages/notifications

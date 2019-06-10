@@ -1,12 +1,35 @@
 import React from 'react'
 
-const Notification = ({ message }) => {
+const Notification = ({ state }) => {
+    const message = state.message
+    const type = state.type
+
     if (message === null) {
         return null
     }
 
+    // Let's define the style for the Notifications
+    const style = {
+        background: 'lightgrey',
+        fontSize: '20px',
+        borderStyle: 'solid',
+        borderRadius: '3px',
+        padding: '15px',
+        marginBottom: '50px'
+    }
+
+    let notificationStyle = null
+
+    if (type === 'error') {
+        // And let's add color (red) for the error messages/notifications
+        notificationStyle= { ...style, color: 'red' }
+    } else {
+        // And green for other messages/notifications
+        notificationStyle= { ...style, color: 'green' }
+    }
+
     return (
-        <div className="error">
+        <div style={notificationStyle}>
             {message}
         </div>
     )
