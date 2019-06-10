@@ -16,7 +16,6 @@ const App = () => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [user, setUser] = useState(null)
-    const [loginVisible, setLoginVisible] = useState(false)
     const [notificationState, setNotificationState] = useState({
         message: null,
         type: null
@@ -125,14 +124,6 @@ const App = () => {
                 setNotificationState({ ...notificationState, message: null })
             },5000)
         }
-    }
-
-    const handleUsernameChange = (event) => {
-        setUsername(event.target.value)
-    }
-
-    const handlePasswordChange = (event) => {
-        setPassword(event.target.value)
     }
 
     const handleBlogTitleChange = (event) => {
