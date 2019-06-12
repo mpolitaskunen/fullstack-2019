@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState }) => {
+const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState, user }) => {
     // State engines for displaystate
     const [blogState, setBlogState] = useState(false)
     const [likes, setLikes] = useState(blog.likes)
@@ -71,6 +71,13 @@ const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState }
         return ('Unknown')
     }
 
+    const deleteButton = () => {
+        if (blog.user.username === user.username) {
+            return <><button onClick={handleDelete}>Delete</button></>
+        }
+        return null
+    }
+
     // Constants for divStyles to either display or hide a div
     const hideWhenVisible = { display: blogState ? 'none' : '' }
     const showWhenVisible = { display: blogState ? '' : 'none' }
@@ -93,7 +100,7 @@ const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState }
                 <div><b>URL: </b><a href={blog.url}>{blog.url}</a></div>
                 <div><b>Likes: </b>{likes}<button onClick={handleLike}>Like</button></div>
                 <div><b>Entry owner: </b>{entryOwner()}</div>
-                <div><button onClick={handleDelete}>Delete</button></div>
+                <div>{deleteButton()}</div>
             </div>
         )
     }
