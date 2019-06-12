@@ -85,7 +85,7 @@ const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState, 
     // The short style entry
     const shortForm = () => {
         return(
-            <div style={hideWhenVisible} onClick={() => setBlogState(true)}>
+            <div style={hideWhenVisible} onClick={() => setBlogState(true)} className='shortform'>
                 <b> Title: </b> {blog.title} <b> Author: </b> {blog.author}
             </div>
         )
@@ -94,7 +94,7 @@ const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState, 
     // The long style entry
     const longForm = () => {
         return(
-            <div style={showWhenVisible} onClick={() => setBlogState(false)}>
+            <div style={showWhenVisible} onClick={() => setBlogState(false)} className='longform'>
                 <div><b>Title: </b> {blog.title}</div>
                 <div><b>Author: </b> {blog.author}</div>
                 <div><b>URL: </b><a href={blog.url}>{blog.url}</a></div>
@@ -107,7 +107,7 @@ const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState, 
 
     // And return the field to the origin
     return (
-        <div style={blogStyle}>
+        <div style={blogStyle} className='blogEntry'>
             {blogState === false
                 ? shortForm()
                 : longForm()}

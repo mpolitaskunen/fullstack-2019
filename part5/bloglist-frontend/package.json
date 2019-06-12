@@ -27,7 +27,10 @@
     "not op_mini all"
   ],
   "devDependencies": {
+    "@testing-library/react": "^8.0.1",
     "eslint": "^5.16.0",
-    "eslint-plugin-jest": "^22.6.4"
+    "eslint-plugin-jest": "^22.6.4",
+    "jest-dom": "^3.5.0",
+    "react-testing-library": "^8.0.1"
   }
 }
