@@ -27,6 +27,7 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
             setLoggedIn(true)
             userHandler(user)
         }
+    // eslint-disable-next-line
     }, [])
 
     const loginHandler = async (event) => {
