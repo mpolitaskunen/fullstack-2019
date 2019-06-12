@@ -14,9 +14,12 @@ const App = () => {
     })
 
     useEffect(() => {
-        blogService.getAll().then(blogs =>
-            setBlogs( blogs.sort(function (a,b) { return b.likes - a.likes }) )
+        blogService
+            .getAll()
+            .then(blogs =>
+                setBlogs( blogs.sort(function (a,b) { return b.likes - a.likes }) )
         )
+    // eslint-disble-next-line
     }, [])
 
     const userHandler = (user) => {
@@ -44,13 +47,15 @@ const App = () => {
         <div>
             <Notification state={notificationState} />
             <h2>Bloglist</h2>
-            <Authentication userHandler={userHandler} notifications={notificationState} notificationState={setNotificationState} />
+            <Authentication userHandler={userHandler} notifications={notificationState} notificationState={setNotificationState} className='login' />
             {user !== null
-                ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} notificationState={notificationState} setNotificationState={setNotificationState} /></div>
+                ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} notificationState={notificationState} setNotificationState={setNotificationState} className='blogForm' /></div>
                 : <div></div>}
-            {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} notificationState={notificationState} setNotificationState={setNotificationState} setBlogs={setBlogs} blogs={blogs} user={user} />
-            )}
+            {user !== null
+                ? blogs.map(blog =>
+                    <Blog key={blog.id} blog={blog} notificationState={notificationState} setNotificationState={setNotificationState} setBlogs={setBlogs} blogs={blogs} user={user} className='blogList'/>)
+                : <div></div>
+            }
 
             <Footer/>
         </div>
