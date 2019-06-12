@@ -64,14 +64,14 @@ bloglistRouter.delete('/:id', async (req,res,next) => {
         }
 
         const user = await User.findById(decodedToken.id)
-        const entry = await Entry.findById(req.params.id)
+        const entry = await Entry.findById(req.params.id.trim())
 
         if (entry === undefined || entry === null) {
             return res.status(400).json({ error: 'Invalid entry ID' })
         }
 
         if (entry.user.toString() === user.id) {
-            Entry.findByIdAndDelete(req.params.id)
+            await Entry.findByIdAndRemove(req.params.id.trim())
             res.status(204).end()
         }
     } catch(error) {

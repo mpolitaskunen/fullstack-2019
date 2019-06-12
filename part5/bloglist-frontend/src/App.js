@@ -49,7 +49,7 @@ const App = () => {
                 ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} notificationState={notificationState} setNotificationState={setNotificationState} /></div>
                 : <div></div>}
             {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} notificationState={notificationState} setNotificationState={setNotificationState} />
+                <Blog key={blog.id} blog={blog} notificationState={notificationState} setNotificationState={setNotificationState} setBlogs={setBlogs} blogs={blogs} />
             )}
 
             <Footer/>

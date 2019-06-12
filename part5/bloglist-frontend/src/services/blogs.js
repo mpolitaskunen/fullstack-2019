@@ -39,4 +39,13 @@ const like = async (props) => {
     return response.data
 }
 
-export default { getAll, create, setUser, setToken, like }
+const remove = async (props) => {
+    const config = {
+        headers: { Authorization: token },
+    }
+
+    const response = await axios.delete(baseUrl.concat(`/${props}`), config)
+    return response.data
+}
+
+export default { getAll, create, setUser, setToken, like, remove }

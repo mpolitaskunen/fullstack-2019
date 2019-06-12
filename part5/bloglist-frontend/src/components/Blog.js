@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from '../services/blogs'
 
-const Blog = ({ blog, setNotificationState, notificationState }) => {
+const Blog = ({ blog, setBlogs, blogs, setNotificationState, notificationState }) => {
     // State engines for displaystate
     const [blogState, setBlogState] = useState(false)
     const [likes, setLikes] = useState(blog.likes)
@@ -30,6 +30,30 @@ const Blog = ({ blog, setNotificationState, notificationState }) => {
             setTimeout(() => {
                 setNotificationState({ ...notificationState, message: null })
             }, 5000)
+        } catch(error) {
+            setNotificationState({ type: 'error', message: error })
+            setTimeout(() => {
+                setNotificationState({ ...notificationState, message: null })
+            }, 5000)
+
+        }
+    }
+
+    const handleDelete = async (event) => {
+        event.preventDefault()
+
+        const entryId = blog.id
+
+        try {
+            if(window.confirm(`Are you sure you want to remove: ${blog.title} by ${blog.author}`)) {
+                blogService.remove(entryId)
+                setNotificationState({ type: 'event', message: `Removed entry: ${blog.title} by ${blog.author}` })
+                setTimeout(() => {
+                    setNotificationState({ ...notificationState, message: null })
+                }, 5000)
+                setBlogs(blogs.filter(entry => entry.id !== entryId))
+            }
+
         } catch(error) {
             setNotificationState({ type: 'error', message: error })
             setTimeout(() => {
@@ -69,6 +93,7 @@ const Blog = ({ blog, setNotificationState, notificationState }) => {
                 <div><b>URL: </b><a href={blog.url}>{blog.url}</a></div>
                 <div><b>Likes: </b>{likes}<button onClick={handleLike}>Like</button></div>
                 <div><b>Entry owner: </b>{entryOwner()}</div>
+                <div><button onClick={handleDelete}>Delete</button></div>
             </div>
         )
     }
