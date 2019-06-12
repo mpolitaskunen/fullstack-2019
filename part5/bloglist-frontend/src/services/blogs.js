@@ -1,6 +1,7 @@
 import axios from 'axios'
 const baseUrl = '/api/blogs'
 
+let user = null
 let token = null
 
 const setToken = newToken => {
@@ -12,13 +13,21 @@ const getAll = () => {
     return request.then(response => response.data)
 }
 
+const setUser = newUser => {
+    user = newUser
+    setToken(user.token)
+}
+
 const create = async newObject => {
     const config= {
         headers: { Authorization: token },
     }
 
+    newObject.user = user.id
+
     const response = await axios.post(baseUrl, newObject, config)
+    response.data.user = { 'username': user.username, 'name': user.name, 'id': user.id }
     return response.data
 }
 
-export default { getAll, create, setToken }
+export default { getAll, create, setUser, setToken }
