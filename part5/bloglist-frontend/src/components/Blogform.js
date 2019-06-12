@@ -3,16 +3,10 @@ import Togglable from './Togglable'
 import blogService from '../services/blogs'
 
 // The form for creating a blog entry
-const BlogForm = ( props ) => {
+const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } ) => {
     const [newBlogTitle, setNewBlogTitle] = useState('')
     const [newBlogAuthor, setNewBlogAuthor] = useState('')
     const [newBlogUrl, setNewBlogUrl] = useState('')
-    const [blogs, setBlogs] = useState(props.blogs)
-
-    const [notificationState, setNotificationState] = useState({
-        message: null,
-        type: null
-    })
 
     const blogFormRef = React.createRef()
 
@@ -24,25 +18,24 @@ const BlogForm = ( props ) => {
         event.preventDefault()
         try {
             blogFormRef.current.toggleVisibility()
+
             const blogObject = {
                 title: newBlogTitle,
                 author: newBlogAuthor,
                 url: newBlogUrl
             }
 
+            const returnedBlog = await blogService.create(blogObject)
+
             const newState = {
                 message: `Added a new entry: ${newBlogTitle} by ${newBlogAuthor}`,
                 type: 'Event'
             }
 
-            blogService
-                .create(blogObject)
-                .then(returnedBlog => {
-                    setBlogs(blogs.concat(returnedBlog))
-                    setNewBlogAuthor('')
-                    setNewBlogTitle('')
-                    setNewBlogUrl('')
-                })
+            setBlogs(blogs.concat(returnedBlog))
+            setNewBlogAuthor('')
+            setNewBlogTitle('')
+            setNewBlogUrl('')
 
             setNotificationState(newState)
             setTimeout(() => {
@@ -62,12 +55,12 @@ const BlogForm = ( props ) => {
     }
 
     return (
-        <Togglable buttonLabel='New Entry'>
+        <Togglable buttonLabel='New Entry' ref={blogFormRef}>
             <h2>Create a new Blog entry</h2>
             <form onSubmit={addBlog}>
-                <p>Title: <input value={newBlogTitle} onChange={handleBlogTitleChange} /></p>
-                <p>Author: <input value={newBlogAuthor} onChange={handleBlogAuthorChange} /></p>
-                <p>URL: <input value={newBlogUrl} onChange={handleBlogUrlChange} /></p>
+                <div>Title: <input value={newBlogTitle} onChange={handleBlogTitleChange} /></div>
+                <div>Author: <input value={newBlogAuthor} onChange={handleBlogAuthorChange} /></div>
+                <div>URL: <input value={newBlogUrl} onChange={handleBlogUrlChange} /></div>
                 <button type="submit">Save</button>
             </form>
         </Togglable>

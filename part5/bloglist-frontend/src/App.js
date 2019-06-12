@@ -3,10 +3,10 @@ import Blog from './components/Blog'
 import Authentication from './components/Authentication'
 import Notification from './components/Notification'
 import blogService from './services/blogs'
+import BlogForm from './components/BlogForm'
 
 const App = () => {
     const [blogs, setBlogs] = useState([])
-
     const [user, setUser] = useState(null)
     const [notificationState, setNotificationState] = useState({
         message: null,
@@ -18,6 +18,12 @@ const App = () => {
             setBlogs( blogs )
         )
     }, [])
+
+    const userHandler = (user) => {
+        setUser(user)
+        blogService.setUser(user ? user : '')
+    }
+
 
     const Footer = () => {
         const footerStyle = {
@@ -38,9 +44,12 @@ const App = () => {
         <div>
             <Notification state={notificationState} />
             <h2>Bloglist</h2>
-            <Authentication blogs={blogs} />
+            <Authentication userHandler={userHandler} notifications={notificationState} notificationState={setNotificationState} />
+            {user !== null
+                ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} notificationState={notificationState} setNotificationState={setNotificationState} /></div>
+                : <div></div>}
             {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} />
+                <Blog key={blog.id} blog={blog} notificationState={notificationState} setNotificationState={setNotificationState} />
             )}
 
             <Footer/>

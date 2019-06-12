@@ -1,27 +1,22 @@
 import React, { useState, useEffect } from 'react'
 
 import loginService from '../services/login'
-import blogService from '../services/blogs'
 import LoginForm from './LoginForm'
+import LogoutForm from './LogoutForm'
 import Togglable from './Togglable'
-import Notification from './Notification'
-import BlogForm from './BlogForm'
 
-const Authentication = (props) => {
+const Authentication = ({ userHandler, notificationState, setNotificationState }) => {
     const [username, setUsername] = useState('')
     const [password, setPassword] = useState('')
     const [name, setName] = useState('')
-    const [user, setUser] = useState(null)
     const [loggedIn, setLoggedIn] = useState(false)
-    const [notificationState, setNotificationState] = useState({
-        message: null,
-        type: null
-    })
 
-    const loginFormRef = React.createRef()
+    const userInfoStorage = 'loggedBloglistappUser'
+
+    const authFormRef = React.createRef()
 
     useEffect(() => {
-        const loggedUserJSON = window.localStorage.getItem('loggedBloglistappUser')
+        const loggedUserJSON = window.localStorage.getItem(userInfoStorage)
 
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
@@ -30,8 +25,7 @@ const Authentication = (props) => {
             }
 
             setLoggedIn(true)
-            setUser(user)
-            blogService.setToken(user.token)
+            userHandler(user)
         }
     }, [])
 
@@ -43,14 +37,14 @@ const Authentication = (props) => {
             })
 
             window.localStorage.setItem(
-                'loggedBloglistappUser', JSON.stringify(user)
+                userInfoStorage, JSON.stringify(user)
             )
 
-            blogService.setToken(user.token)
-
-            setUser(user)
+            setName(user.name)
             setUsername('')
             setPassword('')
+
+            window.location.href = '/'
 
             const newState = {
                 message: 'Login succeeded',
@@ -74,9 +68,15 @@ const Authentication = (props) => {
     }
 
     const logoutHandler = async (event) => {
+        event.preventDefault()
         try {
             window.localStorage.clear()
+            window.localStorage.removeItem(userInfoStorage)
+            userHandler(null)
+            setLoggedIn(false)
+
             window.location.href = '/'
+
             const newState = {
                 message: 'Logout succeeded. Have a nice day :)',
                 type: 'Event'
@@ -95,21 +95,22 @@ const Authentication = (props) => {
             setNotificationState(newState)
             setTimeout(() => {
                 setNotificationState({ ...notificationState, message: null })
-            },5000)
+            }, 5000)
         }
     }
 
     const logoutForm = () => {
         return(
-            <Togglable buttonLabel='Logout'>
-                <form onSubmit={logoutHandler} />
-            </Togglable>
+            <div>
+                <LogoutForm
+                    handleSubmit={logoutHandler} />
+            </div>
         )
     }
 
     const loginForm = () => {
         return(
-            <Togglable buttonLabel='Login' >
+            <Togglable buttonLabel='Login' ref={authFormRef}>
                 <LoginForm
                     username={username}
                     password={password}
@@ -124,11 +125,7 @@ const Authentication = (props) => {
         <div>
             {loggedIn === false
                 ? loginForm()
-                : <div><p>{user.name} logged in</p> <BlogForm blogs={props.blogs} /></div>
-            }
-            {loggedIn === true
-                ? logoutForm()
-                : <div></div>
+                : <div><p>{name} logged in</p>{logoutForm()}</div>
             }
         </div>
     )
