@@ -18,7 +18,7 @@ const App = () => {
             .getAll()
             .then(blogs =>
                 setBlogs( blogs.sort(function (a,b) { return b.likes - a.likes }) )
-        )
+            )
     // eslint-disble-next-line
     }, [])
 

@@ -7,8 +7,8 @@ const LoginForm = ({ handleSubmit, handleUsernameChange, handlePasswordChange, u
         handleSubmit: PropTypes.func.isRequired,
         handleUsernameChange: PropTypes.func.isRequired,
         handlePasswordChange: PropTypes.func.isRequired,
-        username: PropTypes.func.isRequired,
-        password: PropTypes.func.isRequired
+        username: PropTypes.string.isRequired,
+        password: PropTypes.string.isRequired
     }
 
     return (
