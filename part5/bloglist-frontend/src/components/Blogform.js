@@ -55,9 +55,9 @@ const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } )
         <Togglable buttonLabel='New Entry' ref={blogFormRef}>
             <h2>Create a new Blog entry</h2>
             <form onSubmit={addBlog}>
-                <div>Title: <input {...blogTitle} /></div>
-                <div>Author: <input {...blogAuthor} /></div>
-                <div>URL: <input {...blogUrl} /></div>
+                <div>Title: <input {...blogTitle.noReset()} /></div>
+                <div>Author: <input {...blogAuthor.noReset()} /></div>
+                <div>URL: <input {...blogUrl.noReset()} /></div>
                 <button type="submit">Save</button>
             </form>
         </Togglable>

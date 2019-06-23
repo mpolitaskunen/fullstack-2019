@@ -16,11 +16,11 @@ const LoginForm = ({ handleSubmit, username, password }) => {
             <form onSubmit={handleSubmit}>
                 <div>
                     Username:
-                    <input {...username} />
+                    <input {...username.noReset()} />
                 </div>
                 <div>
                     Password:
-                    <input {...password} />
+                    <input {...password.noReset()} />
                 </div>
                 <button type="submit">Login</button>
             </form>
