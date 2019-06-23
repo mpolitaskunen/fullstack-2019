@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-const LoginForm = ({ handleSubmit, handleUsernameChange, handlePasswordChange, username, password }) => {
+const LoginForm = ({ handleSubmit, username, password }) => {
     // Let's define mandatory props...
     LoginForm.propTypes = {
         handleSubmit: PropTypes.func.isRequired,
