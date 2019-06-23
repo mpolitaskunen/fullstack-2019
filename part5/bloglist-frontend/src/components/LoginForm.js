@@ -5,10 +5,8 @@ const LoginForm = ({ handleSubmit, handleUsernameChange, handlePasswordChange, u
     // Let's define mandatory props...
     LoginForm.propTypes = {
         handleSubmit: PropTypes.func.isRequired,
-        handleUsernameChange: PropTypes.func.isRequired,
-        handlePasswordChange: PropTypes.func.isRequired,
-        username: PropTypes.string.isRequired,
-        password: PropTypes.string.isRequired
+        username: PropTypes.object.isRequired,
+        password: PropTypes.object.isRequired
     }
 
     return (
@@ -18,11 +16,11 @@ const LoginForm = ({ handleSubmit, handleUsernameChange, handlePasswordChange, u
             <form onSubmit={handleSubmit}>
                 <div>
                     Username:
-                    <input type="username" value={username} onChange={handleUsernameChange} />
+                    <input {...username} />
                 </div>
                 <div>
                     Password:
-                    <input type="password" value={password} onChange={handlePasswordChange} />
+                    <input {...password} />
                 </div>
                 <button type="submit">Login</button>
             </form>

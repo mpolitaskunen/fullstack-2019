@@ -47,7 +47,7 @@ const App = () => {
         <div>
             <Notification state={notificationState} />
             <h2>Bloglist</h2>
-            <Authentication userHandler={userHandler} notifications={notificationState} notificationState={setNotificationState} className='login' />
+            <Authentication userHandler={userHandler} notificationState={notificationState} setNotificationState={setNotificationState} className='login' />
             {user !== null
                 ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} notificationState={notificationState} setNotificationState={setNotificationState} className='blogForm' /></div>
                 : <div></div>}

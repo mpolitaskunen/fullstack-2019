@@ -4,10 +4,11 @@ import loginService from '../services/login'
 import LoginForm from './LoginForm'
 import LogoutForm from './LogoutForm'
 import Togglable from './Togglable'
+import { useField } from '../hooks'
 
 const Authentication = ({ userHandler, notificationState, setNotificationState }) => {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
+    const uname = useField('username')
+    const pword = useField('password')
     const [name, setName] = useState('')
     const [loggedIn, setLoggedIn] = useState(false)
 
@@ -33,6 +34,9 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
     const loginHandler = async (event) => {
         event.preventDefault()
         try {
+            let username = uname.value
+            let password = pword.value
+
             const user = await loginService.login({
                 username, password,
             })
@@ -42,8 +46,6 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
             )
 
             setName(user.name)
-            setUsername('')
-            setPassword('')
 
             window.location.href = '/'
 
@@ -113,10 +115,8 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
         return(
             <Togglable buttonLabel='Login' ref={authFormRef}>
                 <LoginForm
-                    username={username}
-                    password={password}
-                    handleUsernameChange={({ target }) => setUsername(target.value)}
-                    handlePasswordChange={({ target }) => setPassword(target.value)}
+                    username={uname}
+                    password={pword}
                     handleSubmit={loginHandler} />
             </Togglable>
         )
