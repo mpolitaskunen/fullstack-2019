@@ -1,18 +1,15 @@
 import React, { useState } from 'react'
 import Togglable from './Togglable'
 import blogService from '../services/blogs'
+import { useField } from '../hooks'
 
 // The form for creating a blog entry
 const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } ) => {
-    const [newBlogTitle, setNewBlogTitle] = useState('')
-    const [newBlogAuthor, setNewBlogAuthor] = useState('')
-    const [newBlogUrl, setNewBlogUrl] = useState('')
+    const blogTitle = useField('Blogtitle')
+    const blogUrl = useField('BlogUrl')
+    const blogAuthor = useField('BlogAuthor')
 
     const blogFormRef = React.createRef()
-
-    const handleBlogTitleChange = (event) => { setNewBlogTitle(event.target.value) }
-    const handleBlogAuthorChange = (event) => { setNewBlogAuthor(event.target.value) }
-    const handleBlogUrlChange = (event) => { setNewBlogUrl(event.target.value) }
 
     const addBlog = async (event) => {
         event.preventDefault()
@@ -20,22 +17,22 @@ const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } )
             blogFormRef.current.toggleVisibility()
 
             const blogObject = {
-                title: newBlogTitle,
-                author: newBlogAuthor,
-                url: newBlogUrl
+                title: blogTitle.value,
+                author: blogAuthor.value,
+                url: blogUrl.value
             }
 
             const returnedBlog = await blogService.create(blogObject)
 
             const newState = {
-                message: `Added a new entry: ${newBlogTitle} by ${newBlogAuthor}`,
+                message: `Added a new entry: ${blogTitle.value} by ${blogAuthor.value}`,
                 type: 'Event'
             }
 
             setBlogs(blogs.concat(returnedBlog))
-            setNewBlogAuthor('')
-            setNewBlogTitle('')
-            setNewBlogUrl('')
+            blogTitle.reset()
+            blogAuthor.reset()
+            blogUrl.reset()
 
             setNotificationState(newState)
             setTimeout(() => {
@@ -58,9 +55,9 @@ const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } )
         <Togglable buttonLabel='New Entry' ref={blogFormRef}>
             <h2>Create a new Blog entry</h2>
             <form onSubmit={addBlog}>
-                <div>Title: <input value={newBlogTitle} onChange={handleBlogTitleChange} /></div>
-                <div>Author: <input value={newBlogAuthor} onChange={handleBlogAuthorChange} /></div>
-                <div>URL: <input value={newBlogUrl} onChange={handleBlogUrlChange} /></div>
+                <div>Title: <input {...blogTitle} /></div>
+                <div>Author: <input {...blogAuthor} /></div>
+                <div>URL: <input {...blogUrl} /></div>
                 <button type="submit">Save</button>
             </form>
         </Togglable>
