@@ -1,0 +1,113 @@
+{
+  "notes": [
+    {
+      "content": "custom-hooks are awesome!",
+      "id": 1
+    },
+    {
+      "content": "best feature ever <3",
+      "id": 2
+    },
+    {
+      "content": "Rewqrqrq",
+      "id": 3
+    }
+  ],
+  "persons": [
+    {
+      "name": "mluukkai",
+      "number": "040-5483923",
+      "id": 1
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 2
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 3
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 4
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 5
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 6
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 7
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 8
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 9
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 10
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 11
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 12
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 13
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 14
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 15
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 16
+    },
+    {
+      "name": "Jimmy Boy",
+      "number": "1239129312",
+      "id": 17
+    },
+    {
+      "name": "Matti Esko",
+      "number": "123912913",
+      "id": 18
+    },
+    {
+      "name": "Janne boi",
+      "number": "12848481",
+      "id": 19
+    }
+  ]
+}
