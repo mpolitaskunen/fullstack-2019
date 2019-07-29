@@ -1,10 +1,19 @@
 import React from 'react'
+import { addDote, addVote } from './reducers/anecdoteReducer'
 
 const App = (props) => {
     const anecdotes = props.store.getState()
 
     const vote = (id) => {
         console.log('vote', id)
+        props.store.dispatch(addVote(id))
+    }
+
+    const addAnecdote = (event) => {
+        event.preventDefault()
+        const content = event.target.newAnecdote.value
+        props.store.dispatch(addDote(content))
+        event.target.newAnecdote.value = ''
     }
 
     return (
@@ -16,15 +25,15 @@ const App = (props) => {
                         {anecdote.content}
                     </div>
                     <div>
-            has {anecdote.votes}
-                        <button onClick={() => vote(anecdote.id)}>vote</button>
+                        has {anecdote.votes} votes
+                        <button onClick={() => vote(anecdote.id)}> vote</button>
                     </div>
                 </div>
             )}
             <h2>create new</h2>
-            <form>
-                <div><input /></div>
-                <button>create</button>
+            <form onSubmit={addAnecdote}>
+                <div><input name="newAnecdote" /></div>
+                <button type="submit">create</button>
             </form>
         </div>
     )
