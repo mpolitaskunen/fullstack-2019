@@ -7,6 +7,7 @@ const App = (props) => {
     const vote = (id) => {
         console.log('vote', id)
         props.store.dispatch(addVote(id))
+        props.store.dispatch({ type: 'SORT' })
     }
 
     const addAnecdote = (event) => {
