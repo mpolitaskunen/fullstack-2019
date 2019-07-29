@@ -1,4 +1,5 @@
 import React from 'react'
+import AnecdoteForm from './components/AnecdoteForm'
 import { addDote, addVote } from './reducers/anecdoteReducer'
 
 const App = (props) => {
@@ -10,12 +11,6 @@ const App = (props) => {
         props.store.dispatch({ type: 'SORT' })
     }
 
-    const addAnecdote = (event) => {
-        event.preventDefault()
-        const content = event.target.newAnecdote.value
-        props.store.dispatch(addDote(content))
-        event.target.newAnecdote.value = ''
-    }
 
     return (
         <div>
@@ -31,11 +26,7 @@ const App = (props) => {
                     </div>
                 </div>
             )}
-            <h2>create new</h2>
-            <form onSubmit={addAnecdote}>
-                <div><input name="newAnecdote" /></div>
-                <button type="submit">create</button>
-            </form>
+            <AnecdoteForm store={props.store} />
         </div>
     )
 }
