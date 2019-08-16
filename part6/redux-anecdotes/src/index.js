@@ -2,8 +2,8 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 import { createStore, combineReducers } from 'redux'
 import App from './App'
-import anecdoteReducer, { createAnecdote } from './reducers/anecdoteReducer'
-import notificationReducer, { setNotification } from './reducers/notificationReducer'
+import anecdoteReducer from './reducers/anecdoteReducer'
+import notificationReducer from './reducers/notificationReducer'
 
 const reducer = combineReducers( {
     anecdotes: anecdoteReducer,

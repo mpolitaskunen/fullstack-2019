@@ -1,4 +1,5 @@
-const initialState = 'Notified!'
+// const initialState = 'Notified!'
+// Removed, as it's not needed anymore
 
 export const setNotification = (content) => {
     return {
@@ -8,7 +9,7 @@ export const setNotification = (content) => {
     }
 }
 
-const reducer = (state = initialState, action) => {
+const reducer = (state = null, action) => {
     switch (action.type) {
 
     case 'SET_NOTIFICATION': {
