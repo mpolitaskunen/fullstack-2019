@@ -10,12 +10,7 @@ const AnecdoteList = (props) => {
         props.addVote(anecdote)
 
         // Let's notify the user...
-        setNotification(`You voted for '${anecdote.content}'`)
-
-        // After timeout, clear the notification
-        setTimeout(() => {
-            setNotification(null)
-        },5000)
+        props.setNotification(`You voted for '${anecdote.content}'`, 5)
     }
 
     return(
