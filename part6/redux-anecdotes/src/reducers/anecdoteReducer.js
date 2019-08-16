@@ -1,12 +1,12 @@
 import doteService from '../services/anecdotes'
 
-export const addDote = (anecdote) => {
-    return {
-        type: 'NEW',
-        data: {
-            content: anecdote,
-            votes: 0
-        }
+export const addDote = anecdote => {
+    return async dispatch => {
+        const newAnecdote = await doteService.createNew(anecdote)
+        dispatch({
+            type: 'NEW',
+            data: newAnecdote
+        })
     }
 }
 
