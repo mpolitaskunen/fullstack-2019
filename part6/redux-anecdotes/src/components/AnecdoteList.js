@@ -7,7 +7,7 @@ const AnecdoteList = (props) => {
 
     const vote = (anecdote) => {
         // Add the vote
-        props.addVote(anecdote.id)
+        props.addVote(anecdote)
 
         // Let's notify the user...
         setNotification(`You voted for '${anecdote.content}'`)

@@ -10,10 +10,13 @@ export const addDote = anecdote => {
     }
 }
 
-export const addVote = (id) => {
-    return {
-        type: 'VOTE',
-        data: { id }
+export const addVote = id => {
+    return async dispatch => {
+        const vote = await doteService.vote(id)
+        dispatch({
+            type: 'VOTE',
+            data: vote
+        })
     }
 }
 
@@ -39,13 +42,9 @@ const reducer = (state = [], action) => {
     }
 
     case 'VOTE': {
-        const id = action.data.id
-        const anecdote = state.find(n => n.id === id)
-        const changedDote = {
-            ...anecdote,
-            votes: anecdote.votes + 1
-        }
-        return state.map(dote => dote.id !== id ? dote : changedDote)
+        const voted = action.data
+        return state
+            .map(dote => dote.id !== voted.id ? dote : voted)
     }
 
     default:
