@@ -35,12 +35,6 @@ export const addVote = (id) => {
     }
 }
 
-export const sortList = () => {
-    return {
-        type: 'SORT'
-    }
-}
-
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
@@ -61,10 +55,6 @@ const reducer = (state = initialState, action) => {
             votes: anecdote.votes + 1
         }
         return state.map(dote => dote.id !== id ? dote : changedDote)
-    }
-
-    case 'SORT': {
-        return state.slice().sort((a,b) => b.votes - a.votes)
     }
 
     default:
