@@ -35,6 +35,12 @@ export const addVote = (id) => {
     }
 }
 
+export const sortList = () => {
+    return {
+        type: 'SORT'
+    }
+}
+
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
