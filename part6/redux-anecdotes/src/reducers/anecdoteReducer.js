@@ -38,7 +38,8 @@ export const addVote = (id) => {
 const initialState = anecdotesAtStart.map(asObject)
 
 const reducer = (state = initialState, action) => {
-    console.log('anecdoteReducer: state, action: ', state, action)
+    // Let's disable this console message...
+    // console.log('anecdoteReducer: state, action: ', state, action)
 
     switch(action.type) {
 

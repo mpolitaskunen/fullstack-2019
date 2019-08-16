@@ -3,9 +3,10 @@ import { addVote } from '../reducers/anecdoteReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = ({ store }) => {
-    const vote = (anecdote) => {
-        console.log('vote', anecdote)
+    // Let's add simpler calls for the store contents..
+    const { anecdotes, filter } = store.getState()
 
+    const vote = (anecdote) => {
         // Add the vote
         store.dispatch(addVote(anecdote.id))
         store.dispatch({ type: 'SORT' })
@@ -21,17 +22,21 @@ const AnecdoteList = ({ store }) => {
 
     return(
         <div>
-            {store.getState().anecdotes.map(anecdote =>
-                <div key={anecdote.id}>
-                    <div>
-                        {anecdote.content}
+            {anecdotes
+                .filter(anecdote => anecdote.content.toLowerCase()
+                    .includes(filter.toLowerCase())
+                )
+                .map(anecdote =>
+                    <div key={anecdote.id}>
+                        <div>
+                            {anecdote.content}
+                        </div>
+                        <div>
+                            has {anecdote.votes} votes
+                            <button onClick={() => vote(anecdote)}> vote</button>
+                        </div>
                     </div>
-                    <div>
-                        has {anecdote.votes} votes
-                        <button onClick={() => vote(anecdote)}> vote</button>
-                    </div>
-                </div>
-            )}
+                )}
         </div>
     )
 }

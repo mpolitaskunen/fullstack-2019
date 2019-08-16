@@ -11,12 +11,12 @@ const AnecdoteForm = ({ store }) => {
 
     return (
         <div>
-            <h2>create new</h2>
+            Create a new Anecdote:
             <form onSubmit={addAnecdote}>
                 <div>
                     <input name="newAnecdote" />
                 </div>
-                <button type="submit">create</button>
+                <button type="submit">Create</button>
             </form>
         </div>
     )
