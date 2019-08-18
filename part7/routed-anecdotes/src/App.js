@@ -57,26 +57,31 @@ const CreateNew = (props) => {
             info,
             votes: 0
         })
+        props.history.push('/')
+        props.notifyUser(`A new Anecdote "${content}" created!`, 10)
     }
+
 
     return (
         <div>
             <h2>Create a new Anecdote</h2>
             <form onSubmit={handleSubmit}>
                 <div>
-                    Content <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
+                    Content: <input name='content' value={content} onChange={(e) => setContent(e.target.value)} />
                 </div>
                 <div>
-                    Author <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
+                    Author: <input name='author' value={author} onChange={(e) => setAuthor(e.target.value)} />
                 </div>
                 <div>
-                    URL for more info <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
+                    URL for more info: <input name='info' value={info} onChange={(e) => setInfo(e.target.value)} />
                 </div>
                 <button>Create</button>
             </form>
         </div>
     )
 }
+
+const Create = withRouter(CreateNew)
 
 const App = () => {
     const padding = {
@@ -102,6 +107,13 @@ const App = () => {
 
     const [notification, setNotification] = useState('')
 
+    const notifyUser = (message, time) => {
+        setNotification(message)
+        setTimeout(() => {
+            setNotification('')
+        }, time * 1000)
+    }
+
     const addNew = (anecdote) => {
         anecdote.id = (Math.random() * 10000).toFixed(0)
         setAnecdotes(anecdotes.concat(anecdote))
@@ -124,6 +136,7 @@ const App = () => {
     return (
         <div>
             <h1>Software anecdotes</h1>
+            <div>{notification}</div>
             <div>
             <Router>
                 <div>
@@ -133,7 +146,7 @@ const App = () => {
                 </div>
                 <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
                 <Route exact path="/anecdotes/:id" render={(({ match }) => <Anecdote anecdote={anecdoteById(match.params.id)}/>)} />
-                <Route path="/create" render={() => <CreateNew  addNew={addNew} />} />
+                <Route path="/create" render={() => <Create addNew={addNew} notifyUser={notifyUser} />} />
                 <Route path="/about" render={() => <About />} />
             </Router>
             </div>
