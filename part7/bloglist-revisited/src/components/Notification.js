@@ -1,8 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
-const Notification = ({ state }) => {
-    const message = state.message
-    const type = state.type
+const Notification = ({ store }) => {
+    const message = store.getState().message
+    const type = store.getState().type
 
     if (message === null) {
         return null
@@ -35,4 +36,5 @@ const Notification = ({ state }) => {
     )
 }
 
-export default Notification
+const connectedNotification = connect()(Notification)
+export default connectedNotification

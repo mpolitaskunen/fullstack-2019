@@ -5,7 +5,9 @@ import Notification from './components/Notification'
 import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
 
-const App = () => {
+const App = (props) => {
+    const store = props.store
+
     const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
     const [notificationState, setNotificationState] = useState({
@@ -46,7 +48,7 @@ const App = () => {
 
     return (
         <div>
-            <Notification state={notificationState} />
+            <Notification store={store} />
             <h2>Bloglist</h2>
             <Authentication userHandler={userHandler} notificationState={notificationState} setNotificationState={setNotificationState} className='login' />
             {user !== null
