@@ -1,0 +1,7 @@
+GET http://localhost:3003/api/blogs/5cfdf98d8c13c21bacbe9243
+
+###
+// The Authorization token must be updated every once in a while using the login.rest request model
+DELETE http://localhost:3003/api/blogs/5d00f3ba3cdebd508c55c5e4
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlRlc3RpIiwiaWQiOiI1Y2ZkNjE4Mzg4ODRkYzhkOGNiMTNlMWMiLCJpYXQiOjE1NjAzNDk4MDB9.AKAp65OQQdSvcpo5SgADs-mWU8QUShjl5qUBL-52foQ

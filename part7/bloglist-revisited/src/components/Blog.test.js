@@ -1,6 +1,6 @@
 import React from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import { prettyDOM } from '@testing-library/dom' 
+import { prettyDOM } from '@testing-library/dom'
 import Blog from './Blog'
 
 const blog = {
@@ -46,7 +46,7 @@ test('Test that the blog frame opens up correctly', async () => {
     expect(component.container).not.toHaveTextContent(
         'The url'
     )
-    
+
     const dev = component.container.querySelector('.shortform')
     fireEvent.click(dev)
 

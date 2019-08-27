@@ -22,6 +22,7 @@ const App = () => {
     // eslint-disble-next-line
     }, [])
 
+    // Create a user handler..
     const userHandler = (user) => {
         setUser(user)
         blogService.setUser(user ? user : '')

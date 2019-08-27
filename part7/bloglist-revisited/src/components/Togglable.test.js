@@ -7,9 +7,9 @@ describe('<Togglable />', () => {
 
     beforeEach(() => {
         component = render(
-        <Togglable buttonLabel="show...">
-            <div className="testDiv" />
-        </Togglable>
+            <Togglable buttonLabel="show...">
+                <div className="testDiv" />
+            </Togglable>
         )
     })
 
@@ -34,12 +34,12 @@ describe('<Togglable />', () => {
     test('The toggled content can be closed', () => {
         const button = component.getByText('show...')
         fireEvent.click(button)
-      
+
         const closeButton = component.getByText('Cancel')
         fireEvent.click(closeButton)
-      
+
         const div = component.container.querySelector('.togglableContent')
         expect(div).toHaveStyle('display: none')
-      })
+    })
 
 })

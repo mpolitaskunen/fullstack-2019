@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "The Sixth blog post",
+    "author": "The creator of this webapp",
+    "url": "http://localhost:3003/api/blogs",
+    "likes": "1552245",
+    "user": "5cfd61838884dc8d8cb13e1c"
+}
