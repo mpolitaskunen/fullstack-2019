@@ -23,7 +23,7 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://localhost:3000",
+  "proxy": "http://localhost:3003",
   "browserslist": [
     ">0.2%",
     "not dead",
@@ -35,7 +35,6 @@
     "eslint": "^5.16.0",
     "eslint-plugin-jest": "^22.6.4",
     "jest-dom": "^3.5.0",
-    "json-server": "^0.15.0",
     "react-testing-library": "^8.0.1"
   }
 }

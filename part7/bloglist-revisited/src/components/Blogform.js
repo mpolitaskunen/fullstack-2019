@@ -1,10 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { connect } from 'react-redux'
+
 import Togglable from './Togglable'
 import blogService from '../services/blogs'
 import { useField } from '../hooks'
+import { setNotification } from '../reducers/notificationReducer'
 
 // The form for creating a blog entry
-const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } ) => {
+const BlogForm = (props) => {
     const blogTitle = useField('Blogtitle')
     const blogUrl = useField('BlogUrl')
     const blogAuthor = useField('BlogAuthor')
@@ -26,28 +29,24 @@ const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } )
 
             const newState = {
                 message: `Added a new entry: ${blogTitle.value} by ${blogAuthor.value}`,
-                type: 'Event'
+                type: 'Event',
+                time: 5
             }
 
-            setBlogs(blogs.concat(returnedBlog))
+            props.setBlogs(props.blogs.concat(returnedBlog))
             blogTitle.reset()
             blogAuthor.reset()
             blogUrl.reset()
 
-            setNotificationState(newState)
-            setTimeout(() => {
-                setNotificationState({ ...notificationState, message: null })
-            }, 5000)
+            props.setNotification(newState)
 
         } catch(exception) {
             const newState = {
                 message: 'Adding a new entry failed',
-                type: 'error'
+                type: 'error',
+                time: 5
             }
-            setNotificationState(newState)
-            setTimeout(() => {
-                setNotificationState({ ...notificationState, message: null })
-            }, 5000)
+            props.setNotification(newState)
         }
     }
 
@@ -64,4 +63,8 @@ const BlogForm = ({ blogs, setBlogs, notificationState, setNotificationState } )
     )
 }
 
-export default BlogForm
+const mapDispatchToProps = {
+    setNotification
+}
+
+export default connect(null, mapDispatchToProps)(BlogForm)

@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
+
 import Blog from './components/Blog'
 import Authentication from './components/Authentication'
 import Notification from './components/Notification'
@@ -6,14 +8,8 @@ import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
 
 const App = (props) => {
-    const store = props.store
-
     const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
-    const [notificationState, setNotificationState] = useState({
-        message: null,
-        type: null
-    })
 
     useEffect(() => {
         blogService
@@ -48,15 +44,15 @@ const App = (props) => {
 
     return (
         <div>
-            <Notification store={store} />
+            <Notification />
             <h2>Bloglist</h2>
-            <Authentication userHandler={userHandler} notificationState={notificationState} setNotificationState={setNotificationState} className='login' />
+            <Authentication userHandler={userHandler} className='login' />
             {user !== null
-                ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} notificationState={notificationState} setNotificationState={setNotificationState} className='blogForm' /></div>
+                ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} className='blogForm' /></div>
                 : <div></div>}
             {user !== null
                 ? blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} notificationState={notificationState} setNotificationState={setNotificationState} setBlogs={setBlogs} blogs={blogs} user={user} className='blogList'/>)
+                    <Blog key={blog.id} blog={blog} setBlogs={setBlogs} blogs={blogs} user={user} className='blogList'/>)
                 : <div></div>
             }
 
@@ -65,4 +61,4 @@ const App = (props) => {
     )
 }
 
-export default App
+export default connect(null,null)(App)

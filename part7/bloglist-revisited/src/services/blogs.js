@@ -35,7 +35,10 @@ const like = async (props) => {
         headers: { Authorization: token },
     }
 
-    const response = await axios.put(baseUrl.concat(`/${props.entryId}`), props.blog, config)
+    console.log('Like function, lets see what props.blog contains...')
+    console.log(props.tempblog)
+
+    const response = await axios.put(baseUrl.concat(`/${props.entryId}`), props.tempblog, config)
     return response.data
 }
 

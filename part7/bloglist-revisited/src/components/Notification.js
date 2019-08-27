@@ -1,14 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-const Notification = ({ store }) => {
-    const message = store.getState().message
-    const type = store.getState().type
-
-    if (message === null) {
-        return null
-    }
-
+const Notification = (props) => {
     // Let's define the style for the Notifications
     const style = {
         background: 'lightgrey',
@@ -19,14 +12,26 @@ const Notification = ({ store }) => {
         marginBottom: '50px'
     }
 
+    // Ensure that the notificationStyle variable is empty...
     let notificationStyle = null
 
+    if(props.notifications === null){
+        return <div></div>
+    }
+
+    const message = props.notifications.message
+    const type = props.notifications.type
+
     if (type === 'error') {
-        // And let's add color (red) for the error messages/notifications
+        // Error-type notifications have a red border...
         notificationStyle= { ...style, color: 'red' }
     } else {
-        // And green for other messages/notifications
+        // Other notifications have a green border...
         notificationStyle= { ...style, color: 'green' }
+    }
+
+    if (message === null || message === '' || message === undefined) {
+        return <div></div>
     }
 
     return (
@@ -36,5 +41,12 @@ const Notification = ({ store }) => {
     )
 }
 
-const connectedNotification = connect()(Notification)
-export default connectedNotification
+const mapStateToProps = (state) => {
+    console.log('Mapping state to props...')
+    console.log(state)
+    return {
+        notifications: state.notifications
+    }
+}
+
+export default connect(mapStateToProps, null)(Notification)

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 
 import loginService from '../services/login'
 import LoginForm from './LoginForm'
 import LogoutForm from './LogoutForm'
 import Togglable from './Togglable'
 import { useField } from '../hooks'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Authentication = ({ userHandler, notificationState, setNotificationState }) => {
+const Authentication = (props) => {
     const uname = useField('username')
     const pword = useField('password')
     const [name, setName] = useState('')
@@ -26,7 +28,7 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
             }
 
             setLoggedIn(true)
-            userHandler(user)
+            props.userHandler(user)
         }
     // eslint-disable-next-line
     }, [])
@@ -54,19 +56,13 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
                 type: 'Event'
             }
 
-            setNotificationState(newState)
-            setTimeout(() => {
-                setNotificationState({ ...notificationState, message: null })
-            }, 5000)
+            props.setNotification(newState)
         } catch (exception) {
             const newState = {
                 message: 'The username or password is not valid',
                 type: 'error'
             }
-            setNotificationState(newState)
-            setTimeout(() => {
-                setNotificationState({ ...notificationState, message: null })
-            }, 5000)
+            props.setNotification(newState)
         }
     }
 
@@ -75,7 +71,7 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
         try {
             window.localStorage.clear()
             window.localStorage.removeItem(userInfoStorage)
-            userHandler(null)
+            props.userHandler(null)
             setLoggedIn(false)
 
             window.location.href = '/'
@@ -85,20 +81,14 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
                 type: 'Event'
             }
 
-            setNotificationState(newState)
-            setTimeout(() => {
-                setNotificationState({ ...notificationState, message: null })
-            }, 5000)
+            props.setNotification(newState)
         } catch(exception) {
             const newState = {
                 message: 'Logout failed',
                 type: 'error'
             }
 
-            setNotificationState(newState)
-            setTimeout(() => {
-                setNotificationState({ ...notificationState, message: null })
-            }, 5000)
+            props.setNotification(newState)
         }
     }
 
@@ -132,4 +122,5 @@ const Authentication = ({ userHandler, notificationState, setNotificationState }
     )
 }
 
-export default Authentication
+const mapDispatchToProps = { setNotification }
+export default connect(null, mapDispatchToProps)(Authentication)
