@@ -9,8 +9,6 @@ const reducer = combineReducers({
     notifications: notificationReducer
 })
 
-console.log(reducer)
-
 const store = createStore(reducer, applyMiddleware(thunk))
 
 export default store

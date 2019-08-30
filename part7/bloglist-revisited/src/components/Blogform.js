@@ -2,8 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 
 import Togglable from './Togglable'
-import blogService from '../services/blogs'
 import { useField } from '../hooks'
+import { addBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 // The form for creating a blog entry
@@ -25,15 +25,14 @@ const BlogForm = (props) => {
                 url: blogUrl.value
             }
 
-            const returnedBlog = await blogService.create(blogObject)
+            // Call the Reducer for adding a new Blog Object
+            props.addBlog(blogObject)
 
             const newState = {
                 message: `Added a new entry: ${blogTitle.value} by ${blogAuthor.value}`,
-                type: 'Event',
-                time: 5
+                mtype: 'Event'
             }
 
-            props.setBlogs(props.blogs.concat(returnedBlog))
             blogTitle.reset()
             blogAuthor.reset()
             blogUrl.reset()
@@ -43,8 +42,7 @@ const BlogForm = (props) => {
         } catch(exception) {
             const newState = {
                 message: 'Adding a new entry failed',
-                type: 'error',
-                time: 5
+                mtype: 'error'
             }
             props.setNotification(newState)
         }
@@ -64,7 +62,8 @@ const BlogForm = (props) => {
 }
 
 const mapDispatchToProps = {
-    setNotification
+    setNotification,
+    addBlog
 }
 
 export default connect(null, mapDispatchToProps)(BlogForm)

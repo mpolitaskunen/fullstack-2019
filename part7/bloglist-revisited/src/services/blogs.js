@@ -35,10 +35,10 @@ const like = async (props) => {
         headers: { Authorization: token },
     }
 
-    console.log('Like function, lets see what props.blog contains...')
-    console.log(props.tempblog)
+    console.log('Inside the like function is...')
+    console.log(props)
 
-    const response = await axios.put(baseUrl.concat(`/${props.entryId}`), props.tempblog, config)
+    const response = await axios.put(baseUrl.concat(`/${props.id}`), props, config)
     return response.data
 }
 
@@ -46,6 +46,9 @@ const remove = async (props) => {
     const config = {
         headers: { Authorization: token },
     }
+
+    console.log('Inside BlogService Delete/Remove function...')
+    console.log(props)
 
     const response = await axios.delete(baseUrl.concat(`/${props}`), config)
     return response.data

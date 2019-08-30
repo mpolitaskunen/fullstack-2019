@@ -7,17 +7,14 @@ import Notification from './components/Notification'
 import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
 
+import { getBlogs } from './reducers/blogReducer'
+
 const App = (props) => {
-    const [blogs, setBlogs] = useState([])
     const [user, setUser] = useState(null)
 
+    // Let's get the blogs using the blogReducer
     useEffect(() => {
-        blogService
-            .getAll()
-            .then(blogs =>
-                setBlogs( blogs.sort(function (a,b) { return b.likes - a.likes }) )
-            )
-    // eslint-disble-next-line
+        props.getBlogs()
     }, [])
 
     // Create a user handler..
@@ -48,11 +45,11 @@ const App = (props) => {
             <h2>Bloglist</h2>
             <Authentication userHandler={userHandler} className='login' />
             {user !== null
-                ? <div><BlogForm blogs={blogs} setBlogs={setBlogs} className='blogForm' /></div>
+                ? <div><BlogForm className='blogForm' /></div>
                 : <div></div>}
             {user !== null
-                ? blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} setBlogs={setBlogs} blogs={blogs} user={user} className='blogList'/>)
+                ? props.blogs.map(blog =>
+                    <Blog key={blog.id} blog={blog} user={user} className='blogList'/>)
                 : <div></div>
             }
 
@@ -61,4 +58,15 @@ const App = (props) => {
     )
 }
 
-export default connect(null,null)(App)
+const mapDispatchToProps = {
+    getBlogs
+}
+
+const mapStateToProps = (state) => {
+    return {
+        blogs: state.blogs,
+        notifications: state.notifications
+    }
+}
+
+export default connect(mapStateToProps,mapDispatchToProps)(App)

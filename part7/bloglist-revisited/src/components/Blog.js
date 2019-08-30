@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import blogService from '../services/blogs'
+import { addLike, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Blog = (props) => {
-    // State engines for displaystate
-    const [blogState, setBlogState] = useState(false)
-    const [likes, setLikes] = useState(props.blog.likes)
+    // Let's define a local state for the display box in bloglist
+    const [blogState, setBlogState] = useState (false)
 
     // Let's define the blogStyle box style
     const blogStyle = {
@@ -18,61 +17,69 @@ const Blog = (props) => {
         marginBottom: 5
     }
 
-    const tempblog = props.blog
-    console.log('Just under tempblog definition')
-    console.log(typeof tempblog)
-    console.log('And the type of props.blog...')
-    console.log(typeof props.blog)
-    console.log('Lets see what is inside props.blog..')
-    console.log(props.blog)
+    const blog = props.blog
 
     // Let's handle adding likes...
     const handleLike = async (event) => {
         event.preventDefault()
 
-        const entryId = props.blog.id
-
         try {
-            tempblog.likes += 1
-            console.log('Before updatedEntry..')
-            console.log(tempblog)
-            const updatedEntry = await blogService.like({ tempblog, entryId })
-            console.log('Under updatedEntry')
-            console.log(updatedEntry)
-            setLikes(updatedEntry.likes)
-            props.setNotification({ type: 'event', message: `Added a like to ${tempblog.title}` })
+            blog.likes += 1
+            await props.addLike(blog)
+
+            const successNotification = {
+                message: `Added a like to ${blog.title}`,
+                mtype: 'event'
+            }
+
+            props.setNotification(successNotification)
         } catch(error) {
-            props.setNotification({ type: 'error', message: error })
+            const failureNotification = {
+                message: error,
+                mtype: 'error'
+            }
+
+            props.setNotification(failureNotification)
         }
     }
 
+    // Handle the deletion/removal of items...
     const handleDelete = async (event) => {
         event.preventDefault()
 
-        const entryId = props.blog.id
+        const entryId = blog.id
 
         try {
-            if(window.confirm(`Are you sure you want to remove: ${tempblog.title} by ${tempblog.author}`)) {
-                blogService.remove(entryId)
-                props.setNotification({ type: 'event', message: `Removed entry: ${tempblog.title} by ${tempblog.author}` })
-                props.setBlogs(props.blogs.filter(entry => entry.id !== entryId))
+            if(window.confirm(`Are you sure you want to remove: ${blog.title} by ${blog.author}`)) {
+                props.deleteBlog(entryId)
+
+                const successNotification = {
+                    message: `Removed entry: ${blog.title} by ${blog.author}`,
+                    mtype: 'event'
+                }
+
+                props.setNotification(successNotification)
             }
 
         } catch(error) {
-            props.setNotification({ type: 'error', message: error })
+            const failureNotification = {
+                message: error,
+                mtype: 'error'
+            }
+            props.setNotification(failureNotification)
         }
     }
 
     // If the entry has a creator/owner/user assigned to it, show it, otherwise show Unknown
     const entryOwner = () => {
-        if (tempblog.hasOwnProperty('user')) {
-            return tempblog.user.name
+        if (blog.hasOwnProperty('user')) {
+            return blog.user.name
         }
         return ('Unknown')
     }
 
     const deleteButton = () => {
-        if (tempblog.user.username === props.user.username) {
+        if (blog.user.username === props.user.username) {
             return <><button onClick={handleDelete}>Delete</button></>
         }
         return null
@@ -86,7 +93,7 @@ const Blog = (props) => {
     const shortForm = () => {
         return(
             <div style={hideWhenVisible} onClick={() => setBlogState(true)} className='shortform'>
-                <b> Title: </b> {tempblog.title} <b> Author: </b> {tempblog.author}
+                <b> Title: </b> {blog.title} <b> Author: </b> {blog.author}
             </div>
         )
     }
@@ -95,10 +102,10 @@ const Blog = (props) => {
     const longForm = () => {
         return(
             <div style={showWhenVisible} onClick={() => setBlogState(false)} className='longform'>
-                <div><b>Title: </b> {tempblog.title}</div>
-                <div><b>Author: </b> {tempblog.author}</div>
-                <div><b>URL: </b><a href={tempblog.url}>{tempblog.url}</a></div>
-                <div><b>Likes: </b>{likes}<button onClick={handleLike}>Like</button></div>
+                <div><b>Title: </b> {blog.title}</div>
+                <div><b>Author: </b> {blog.author}</div>
+                <div><b>URL: </b><a href={blog.url}>{blog.url}</a></div>
+                <div><b>Likes: </b>{blog.likes}<button onClick={handleLike}>Like</button></div>
                 <div><b>Entry owner: </b>{entryOwner()}</div>
                 <div>{deleteButton()}</div>
             </div>
@@ -115,7 +122,17 @@ const Blog = (props) => {
     )
 }
 
-const mapDispatchToProps = {
-    setNotification
+const mapStateToProps = (state) => {
+    return {
+        blogs: state.blogs,
+        notification: state.notification
+    }
 }
-export default connect(null, mapDispatchToProps)(Blog)
+
+const mapDispatchToProps = {
+    setNotification,
+    addLike,
+    deleteBlog
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Blog)
