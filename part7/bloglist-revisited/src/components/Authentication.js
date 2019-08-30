@@ -1,18 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import loginService from '../services/login'
 import LoginForm from './LoginForm'
 import LogoutForm from './LogoutForm'
 import Togglable from './Togglable'
+import { setUser, unsetUser } from '../reducers/authReducer'
 import { useField } from '../hooks'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Authentication = (props) => {
     const uname = useField('username')
     const pword = useField('password')
-    const [name, setName] = useState('')
-    const [loggedIn, setLoggedIn] = useState(false)
 
     const userInfoStorage = 'loggedBloglistappUser'
 
@@ -23,12 +22,8 @@ const Authentication = (props) => {
 
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
-            if(user.name) {
-                setName(user.name)
-            }
 
-            setLoggedIn(true)
-            props.userHandler(user)
+            props.setUser(user)
         }
     // eslint-disable-next-line
     }, [])
@@ -46,8 +41,6 @@ const Authentication = (props) => {
             window.localStorage.setItem(
                 userInfoStorage, JSON.stringify(user)
             )
-
-            setName(user.name)
 
             window.location.href = '/'
 
@@ -71,8 +64,6 @@ const Authentication = (props) => {
         try {
             window.localStorage.clear()
             window.localStorage.removeItem(userInfoStorage)
-            props.userHandler(null)
-            setLoggedIn(false)
 
             window.location.href = '/'
 
@@ -81,6 +72,7 @@ const Authentication = (props) => {
                 type: 'Event'
             }
 
+            props.unsetUser()
             props.setNotification(newState)
         } catch(exception) {
             const newState = {
@@ -112,15 +104,27 @@ const Authentication = (props) => {
         )
     }
 
+    console.log('Authentication.js before return of the form')
+    console.log(props.user)
+
     return (
         <div>
-            {loggedIn === false
+            {props.user === null
                 ? loginForm()
-                : <div><p>{name} logged in</p>{logoutForm()}</div>
+                : <div><p>{props.user.name} logged in</p>{logoutForm()}</div>
             }
         </div>
     )
 }
 
-const mapDispatchToProps = { setNotification }
-export default connect(null, mapDispatchToProps)(Authentication)
+const mapStateToProps = (state) => ({
+    user: state.user
+})
+
+const mapDispatchToProps = {
+    setNotification,
+    setUser,
+    unsetUser
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Authentication)

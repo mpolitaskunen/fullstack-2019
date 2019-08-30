@@ -1,29 +1,21 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
 import Blog from './components/Blog'
 import Authentication from './components/Authentication'
 import Notification from './components/Notification'
-import blogService from './services/blogs'
 import BlogForm from './components/BlogForm'
 
 import { getBlogs } from './reducers/blogReducer'
 
-const App = (props) => {
-    const [user, setUser] = useState(null)
-
+const App = ({ getBlogs, user, blogs }) => {
     // Let's get the blogs using the blogReducer
     useEffect(() => {
-        props.getBlogs()
+        getBlogs()
+        // eslint-disable-next-line
     }, [])
 
-    // Create a user handler..
-    const userHandler = (user) => {
-        setUser(user)
-        blogService.setUser(user ? user : '')
-    }
-
-
+    // Define the Footer for the page (probably going to move this somewhere else...)
     const Footer = () => {
         const footerStyle = {
             color: 'black',
@@ -43,13 +35,13 @@ const App = (props) => {
         <div>
             <Notification />
             <h2>Bloglist</h2>
-            <Authentication userHandler={userHandler} className='login' />
+            <Authentication className='login' />
             {user !== null
                 ? <div><BlogForm className='blogForm' /></div>
                 : <div></div>}
             {user !== null
-                ? props.blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} user={user} className='blogList'/>)
+                ? blogs.map(blog =>
+                    <Blog key={blog.id} blog={blog} className='blogList'/>)
                 : <div></div>
             }
 
@@ -65,7 +57,8 @@ const mapDispatchToProps = {
 const mapStateToProps = (state) => {
     return {
         blogs: state.blogs,
-        notifications: state.notifications
+        notifications: state.notifications,
+        user: state.user
     }
 }
 
