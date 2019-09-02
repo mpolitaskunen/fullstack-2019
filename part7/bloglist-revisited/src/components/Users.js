@@ -8,7 +8,6 @@ import UsersTableRow from './UsersTableRow'
 // Reducers here
 import { getUsers } from '../reducers/usersReducer'
 
-
 const Users = ({ user, users, getUsers }) => {
     // Let's populate the users store
     useEffect(() => {

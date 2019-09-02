@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { BrowserRouter as Router , Route, Link, Redirect, withRouter } from 'react-router-dom'
 
 // Components here
+import User from './User'
 import Users from './Users'
 import Home from './Home'
 
@@ -21,10 +22,11 @@ const Navigation = ({ user }) => {
                         <Link style={padding} to='/users'>Users</Link>
                     </div>
                     <Route exact path='/' render={() =>
-                        user ? <Home /> : <div />
-                    } />
+                        user ? <Home /> : <div /> } />
                     <Route exact path='/users' render={() =>
                         user ? <Users /> : <div /> } />
+                    <Route exact path='/users/:id' render={({ match }) =>
+                        <User id={match.params.id} />} />
                 </Router>
             </div>
         )
