@@ -24,6 +24,10 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
         return null
     }
 
+    // Let's see what's inside the blog...
+    console.log('Inside BlogPage.js, the blog contents...')
+    console.log(blog)
+
     // Let's handle adding likes...
     const handleLike = async (event) => {
         event.preventDefault()
@@ -75,6 +79,24 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
         }
     }
 
+    const showComments = () => {
+        if(blog.comments.length === 0) {
+            return (
+                <div>
+                </div>
+            )
+        }
+
+        return (
+            <div>
+                <h3>Comments: </h3>
+                <ul>
+                    {blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)}
+                </ul>
+            </div>
+        )
+    }
+
     // If the entry has a creator/owner/user assigned to it, show it, otherwise show Unknown
     const entryOwner = () => {
         if (blog.hasOwnProperty('user')) {
@@ -97,6 +119,7 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
             The Blog has {blog.likes} likes <button onClick={handleLike}>Like</button> <br/>
             Blog entry added by {entryOwner()}
             {deleteButton()}
+            {showComments()}
         </div>
     )
 }
