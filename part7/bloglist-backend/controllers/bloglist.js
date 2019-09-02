@@ -1,12 +1,14 @@
 const bloglistRouter = require('express').Router()
 const Entry = require('../models/entry')
 const User = require('../models/user')
+const Comment = require('../models/comment')
 const jwt = require('jsonwebtoken')
 
 bloglistRouter.get('/', async (req, res) => {
     const entries = await Entry
         .find({})
         .populate('user', { username: 1, name: 1 })
+        .populate('comments', { comment: 1 })
 
     res.json(entries.map(entry => entry.toJSON()))
 })
@@ -47,6 +49,32 @@ bloglistRouter.post('/', async (req,res,next) => {
         user.entries = user.entries.concat(savedEntry._id)
         await user.save()
         res.json(savedEntry.toJSON())
+    } catch(error) {
+        next(error)
+    }
+})
+
+bloglistRouter.post('/:id/comments', async (req,res,next) => {
+    const body = req.body
+
+    try {
+        const decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+        if(!req.token || !decodedToken.id) {
+            return res.status(401).json({ error: 'The Authorization token is missing' })
+        }
+
+        const entry = await Entry.findById(req.params.id.trim())
+
+        const comment = new Comment({
+            comment: body.comment,
+            entry: req.params.id.trim()
+        })
+
+        const savedComment = await comment.save()
+        entry.comments = entry.comments.concat(savedComment._id)
+        await entry.save()
+        res.json(savedComment.toJSON())
     } catch(error) {
         next(error)
     }
