@@ -4,7 +4,8 @@ import { connect } from 'react-redux'
 
 // Used components here
 import BlogForm from './BlogForm'
-import Blog from './Blog'
+import Blogs from './Blogs'
+
 
 // Reducers needed under here...
 import { getBlogs } from '../reducers/blogReducer'
@@ -28,8 +29,7 @@ const Home = ({ blogs, user, getBlogs }) => {
                 ? <div><BlogForm className='blogForm' /></div>
                 : <div></div>}
             {user !== null
-                ? blogs.map(blog =>
-                    <Blog key={blog.id} blog={blog} className='blogList'/>)
+                ? <Blogs className='blogList'/>
                 : <div></div>}
         </div>
     )

@@ -49,6 +49,7 @@ const BlogForm = (props) => {
     }
 
     return (
+        <>
         <Togglable buttonLabel='New Entry' ref={blogFormRef}>
             <h2>Create a new Blog entry</h2>
             <form onSubmit={addBlog}>
@@ -58,6 +59,8 @@ const BlogForm = (props) => {
                 <button type="submit">Save</button>
             </form>
         </Togglable>
+        <br />
+        </>
     )
 }
 

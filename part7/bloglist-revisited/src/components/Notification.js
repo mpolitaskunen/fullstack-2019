@@ -19,13 +19,6 @@ const Notification = (props) => {
         return <div></div>
     }
 
-    console.log('Inside Notificaton.js, message:')
-    console.log(props.notifications.message)
-    console.log('And the model: ')
-    console.log(props.notifications.mtype)
-    console.log('The whole props.notificatiosn')
-    console.log(props.notifications)
-
     const message = props.notifications.message
     const type = props.notifications.mtype
 

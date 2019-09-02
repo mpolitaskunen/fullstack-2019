@@ -1,9 +1,6 @@
 const initialState = null
 
 export const setNotification = (message, mtype) => {
-    console.log ('SetNotification function and message variable:')
-    console.log (message)
-
     return dispatch => {
         dispatch({
             type: 'SET_NOTIFICATION',

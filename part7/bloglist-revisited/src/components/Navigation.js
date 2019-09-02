@@ -7,6 +7,7 @@ import { BrowserRouter as Router , Route, Link, Redirect, withRouter } from 'rea
 import User from './User'
 import Users from './Users'
 import Home from './Home'
+import BlogPage from './BlogPage'
 
 const Navigation = ({ user }) => {
     // Link style
@@ -27,6 +28,8 @@ const Navigation = ({ user }) => {
                         user ? <Users /> : <div /> } />
                     <Route exact path='/users/:id' render={({ match }) =>
                         <User id={match.params.id} />} />
+                    <Route exact path='/blogs/:id' render={({ match }) =>
+                        <BlogPage id={match.params.id} />} />
                 </Router>
             </div>
         )
