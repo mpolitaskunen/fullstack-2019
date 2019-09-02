@@ -10,13 +10,17 @@ import { useField } from '../hooks'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Authentication = (props) => {
+    // Define fields used in login process
     const uname = useField('username')
     const pword = useField('password')
 
+    // Create information storage variable for storing the login information inside the browser
     const userInfoStorage = 'loggedBloglistappUser'
 
+    // Authentication form reference for login process
     const authFormRef = React.createRef()
 
+    // Check if the browser already contains the needed information for login
     useEffect(() => {
         const loggedUserJSON = window.localStorage.getItem(userInfoStorage)
 
@@ -28,16 +32,19 @@ const Authentication = (props) => {
     // eslint-disable-next-line
     }, [])
 
+    // Handle the login process
     const loginHandler = async (event) => {
         event.preventDefault()
         try {
             let username = uname.value
             let password = pword.value
 
+            // Attempt to login using the login service
             const user = await loginService.login({
                 username, password,
             })
 
+            // Add the login information (token) to the browser
             window.localStorage.setItem(
                 userInfoStorage, JSON.stringify(user)
             )
@@ -104,15 +111,13 @@ const Authentication = (props) => {
         )
     }
 
-    console.log('Authentication.js before return of the form')
-    console.log(props.user)
-
     return (
         <div>
             {props.user === null
                 ? loginForm()
                 : <div><p>{props.user.name} logged in</p>{logoutForm()}</div>
             }
+            <br />
         </div>
     )
 }
