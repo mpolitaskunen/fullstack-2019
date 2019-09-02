@@ -108,6 +108,12 @@ bloglistRouter.delete('/:id', async (req,res,next) => {
 })
 
 bloglistRouter.put('/:id', async (req,res,next) => {
+    const decodedToken = jwt.verify(req.token, process.env.SECRET)
+
+    if(!req.token || !decodedToken.id) {
+        return res.status(401).json({ error: 'The Authorization token is missing' })
+    }
+
     const body = req.body
 
     const entry = {

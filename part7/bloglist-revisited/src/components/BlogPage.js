@@ -2,16 +2,19 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-// Components here...
-
+// Hooks here...
+import { useField } from '../hooks'
 
 // Reducers here...
-import { getBlogs, addLike, deleteBlog  } from '../reducers/blogReducer'
+import { getBlogs, addLike, deleteBlog, addComment  } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 
-const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
-    // If the blogs state store is emptry, get blogs
+const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user, addComment }) => {
+    // Define the field for commenting...
+    const blogComment = useField('Comment')
+
+    // If the blogs state store is empty, get blogs
     if(blogs.length === 0) {
         getBlogs()
     }
@@ -24,16 +27,13 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
         return null
     }
 
-    // Let's see what's inside the blog...
-    console.log('Inside BlogPage.js, the blog contents...')
-    console.log(blog)
-
     // Let's handle adding likes...
     const handleLike = async (event) => {
         event.preventDefault()
 
         try {
             blog.likes += 1
+
             await addLike(blog)
 
             const successNotification = {
@@ -41,6 +41,41 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
                 mtype: 'event'
             }
 
+            setNotification(successNotification)
+        } catch(error) {
+            const failureNotification = {
+                message: error,
+                mtype: 'error'
+            }
+
+            setNotification(failureNotification)
+        }
+    }
+
+    // Add comment
+    const commentBlog = async (event) => {
+        event.preventDefault()
+
+        try {
+            // Create the object that gets forwarded to the blogService for commenting
+            const commentObject = {
+                comment: blogComment,
+                id: blog.id
+            }
+
+            // Send data to the blogService addComment function
+            await addComment(commentObject)
+
+            // Define the success notification
+            const successNotification = {
+                message: `Added a comment to ${blog.title}`,
+                mtype: 'event'
+            }
+
+            // Reset the comment field contents to empty
+            blogComment.reset()
+
+            // Send the success notification defined above
             setNotification(successNotification)
         } catch(error) {
             const failureNotification = {
@@ -80,16 +115,11 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
     }
 
     const showComments = () => {
-        if(blog.comments.length === 0) {
-            return (
-                <div>
-                </div>
-            )
-        }
-
         return (
             <div>
-                <h3>Comments: </h3>
+                {blog.comments.length === 0
+                    ? <div />
+                    : <div><h3>Comments: </h3></div>}
                 <ul>
                     {blog.comments.map(comment => <li key={comment.id}>{comment.comment}</li>)}
                 </ul>
@@ -107,7 +137,7 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
 
     const deleteButton = () => {
         if (blog.user.username === user.username) {
-            return <><button onClick={handleDelete}>Delete</button></>
+            return <><button onClick={handleDelete}>Delete this entry</button></>
         }
         return null
     }
@@ -115,10 +145,21 @@ const BlogPage = ({ getBlogs, setNotification, blogs, id, addLike, user }) => {
     return(
         <div>
             <h2>{blog.title}</h2>
-            Address: <a href={blog.url}>{blog.url}</a><br/>
-            The Blog has {blog.likes} likes <button onClick={handleLike}>Like</button> <br/>
-            Blog entry added by {entryOwner()}
+            <p>Address: <a href={blog.url}>{blog.url}</a></p>
+            <p>The Blog has {blog.likes} likes <button onClick={handleLike}>Like</button></p>
+            <p>Blog entry added by {entryOwner()}</p>
             {deleteButton()}
+
+            <br/>
+            <br/>
+
+            <form onSubmit={commentBlog}>
+                <div>
+                    Comment: <input {...blogComment.noReset()} />
+                    <button type="submit">Add Comment</button>
+                </div>
+            </form>
+            <br/>
             {showComments()}
         </div>
     )
@@ -133,7 +174,8 @@ const mapDispatchToProps = ({
     getBlogs,
     addLike,
     deleteBlog,
-    setNotification
+    setNotification,
+    addComment
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BlogPage)

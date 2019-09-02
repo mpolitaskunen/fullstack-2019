@@ -1,11 +1,14 @@
+// Externaal Imports here
 import React from 'react'
 import { connect } from 'react-redux'
 
+// Component imports here
 import Authentication from './components/Authentication'
 import Notification from './components/Notification'
 import Navigation from './components/Navigation'
 
 const App = ({ user }) => {
+
     // Define the Footer for the page (probably going to move this somewhere else...)
     const Footer = () => {
         const footerStyle = {
@@ -39,4 +42,4 @@ const mapStateToProps = (state) => ({
     user: state.user
 })
 
-export default connect(null, mapStateToProps)(App)
+export default connect(mapStateToProps, null)(App)

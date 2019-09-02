@@ -1,36 +1,31 @@
+// External Imports here
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 
-import loginService from '../services/login'
+// Components here
 import LoginForm from './LoginForm'
 import LogoutForm from './LogoutForm'
 import Togglable from './Togglable'
-import { setUser, unsetUser } from '../reducers/authReducer'
+
+// Hooks
 import { useField } from '../hooks'
+
+// Reducers
+import { setUser, unsetUser, checkLogin } from '../reducers/authReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
 const Authentication = (props) => {
+    // Check if the user has already logged in...
+    useEffect(() => {
+        props.checkLogin()
+    })
+
     // Define fields used in login process
     const uname = useField('username')
     const pword = useField('password')
 
-    // Create information storage variable for storing the login information inside the browser
-    const userInfoStorage = 'loggedBloglistappUser'
-
     // Authentication form reference for login process
     const authFormRef = React.createRef()
-
-    // Check if the browser already contains the needed information for login
-    useEffect(() => {
-        const loggedUserJSON = window.localStorage.getItem(userInfoStorage)
-
-        if (loggedUserJSON) {
-            const user = JSON.parse(loggedUserJSON)
-
-            props.setUser(user)
-        }
-    // eslint-disable-next-line
-    }, [])
 
     // Handle the login process
     const loginHandler = async (event) => {
@@ -39,17 +34,12 @@ const Authentication = (props) => {
             let username = uname.value
             let password = pword.value
 
-            // Attempt to login using the login service
-            const user = await loginService.login({
-                username, password,
-            })
+            const user = {
+                username: username,
+                password: password
+            }
 
-            // Add the login information (token) to the browser
-            window.localStorage.setItem(
-                userInfoStorage, JSON.stringify(user)
-            )
-
-            window.location.href = '/'
+            props.setUser(user)
 
             const newState = {
                 message: 'Login succeeded',
@@ -69,17 +59,11 @@ const Authentication = (props) => {
     const logoutHandler = async (event) => {
         event.preventDefault()
         try {
-            window.localStorage.clear()
-            window.localStorage.removeItem(userInfoStorage)
-
-            window.location.href = '/'
-
+            props.unsetUser()
             const newState = {
                 message: 'Logout succeeded. Have a nice day :)',
                 type: 'Event'
             }
-
-            props.unsetUser()
             props.setNotification(newState)
         } catch(exception) {
             const newState = {
@@ -126,10 +110,11 @@ const mapStateToProps = (state) => ({
     user: state.user
 })
 
-const mapDispatchToProps = {
+const mapDispatchToProps = ({
     setNotification,
     setUser,
-    unsetUser
-}
+    unsetUser,
+    checkLogin
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Authentication)

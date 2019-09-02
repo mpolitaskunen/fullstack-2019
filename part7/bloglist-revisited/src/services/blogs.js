@@ -18,7 +18,7 @@ const setUser = newUser => {
     setToken(user.token)
 }
 
-const create = async newObject => {
+const create = async (newObject) => {
     const config= {
         headers: { Authorization: token },
     }
@@ -30,13 +30,25 @@ const create = async newObject => {
     return response.data
 }
 
-const like = async (props) => {
+const addComment = async (props) => {
     const config = {
         headers: { Authorization: token },
     }
 
-    console.log('Inside the like function is...')
-    console.log(props)
+    const blogId = props.id
+    const comment = {
+        comment: props.comment.value
+    }
+
+    const response = await axios.post(baseUrl.concat(`/${blogId}/comments`), comment, config)
+
+    return response.data
+}
+
+const like = async (props) => {
+    const config = {
+        headers: { Authorization: token },
+    }
 
     const response = await axios.put(baseUrl.concat(`/${props.id}`), props, config)
     return response.data
@@ -47,11 +59,8 @@ const remove = async (props) => {
         headers: { Authorization: token },
     }
 
-    console.log('Inside BlogService Delete/Remove function...')
-    console.log(props)
-
     const response = await axios.delete(baseUrl.concat(`/${props}`), config)
     return response.data
 }
 
-export default { getAll, create, setUser, setToken, like, remove }
+export default { getAll, create, setUser, setToken, like, remove, addComment }
