@@ -1,13 +1,10 @@
 // Imported external libraries here
 import React from 'react'
 import { connect } from 'react-redux'
-import { BrowserRouter as Router , Route, Link, Redirect, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router , Link } from 'react-router-dom'
 
 // Components here
-import User from './User'
-import Users from './Users'
-import Home from './Home'
-import BlogPage from './BlogPage'
+import Authentication from './Authentication'
 
 const Navigation = ({ user }) => {
     // Link style
@@ -21,15 +18,9 @@ const Navigation = ({ user }) => {
                     <div>
                         <Link style={padding} to='/'>Home</Link>
                         <Link style={padding} to='/users'>Users</Link>
+                        <Authentication className='login' />
                     </div>
-                    <Route exact path='/' render={() =>
-                        user ? <Home /> : <div /> } />
-                    <Route exact path='/users' render={() =>
-                        user ? <Users /> : <div /> } />
-                    <Route exact path='/users/:id' render={({ match }) =>
-                        <User id={match.params.id} />} />
-                    <Route exact path='/blogs/:id' render={({ match }) =>
-                        <BlogPage id={match.params.id} />} />
+
                 </Router>
             </div>
         )
@@ -37,9 +28,7 @@ const Navigation = ({ user }) => {
 
     return (
         <div>
-            {user
-                ? navigationBar()
-                : <div> </div>}
+            {navigationBar()}
         </div>
     )
 }

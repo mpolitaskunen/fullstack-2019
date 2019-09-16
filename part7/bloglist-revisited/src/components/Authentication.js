@@ -77,32 +77,25 @@ const Authentication = (props) => {
 
     const logoutForm = () => {
         return(
-            <div>
-                <LogoutForm
-                    handleSubmit={logoutHandler} />
-            </div>
+            <LogoutForm handleSubmit={logoutHandler} />
         )
     }
 
     const loginForm = () => {
         return(
             <Togglable buttonLabel='Login' ref={authFormRef}>
-                <LoginForm
-                    username={uname}
-                    password={pword}
-                    handleSubmit={loginHandler} />
+                <LoginForm username={uname} password={pword} handleSubmit={loginHandler} />
             </Togglable>
         )
     }
 
     return (
-        <div>
+        <>
             {props.user === null
                 ? loginForm()
-                : <div><p>{props.user.name} logged in</p>{logoutForm()}</div>
+                : <>{props.user.name} logged in {logoutForm()}</>
             }
-            <br />
-        </div>
+        </>
     )
 }
 
